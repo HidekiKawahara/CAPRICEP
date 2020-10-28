@@ -5,9 +5,24 @@ Coming soon! Keep watching!
 
 ## Reference
 
-Kawahara, H. and Yatabe, K.: Cascaded all-pass filterswith randomized center frequencies and phase polarity foracoustic and speech measurement and data augmentation,arXiv:2010.13185(2020).
+Kawahara, H. and Yatabe, K.: Cascaded all-pass filterswith randomized center frequencies and phase polarity for　acoustic and speech measurement and data augmentation,arXiv:2010.13185(2020).
+
+### Abstract
+
+We introduce a new member of TSP (Time Stretched Pulse) for acoustic and speech measurement infrastructure, 
+based on a simple all-pass filter and systematic randomization. 
+This new infrastructure fundamentally upgrades our previous measurement procedure, 
+which enables simultaneous measurement of multiple attributes, including non-linear ones
+without requiring extra filtering nor post-processing. 
+Our new proposal establishes a theoretically solid, flexible, and extensible foundation in acoustic measurement.
+Moreover, it is general enough to provide versatile research tools for other fields, such as biological signal analysis.
+We illustrate using acoustic measurements and data augmentation as representative examples among various prospective applications. 
+We open-sourced MATLAB implementation. 
+It consists of an interactive and real-time acoustic tool, MATLAB functions, and supporting materials.
 
 ## Sample files
+
+The following files sound pervcptually indistinguishable (at least for me).
 
 Please refer to Fig.5 of the reference.
 
