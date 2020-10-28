@@ -9,11 +9,16 @@ Kawahara, H. and Yatabe, K.: Cascaded all-pass filterswith randomized center fre
 
 ## Sample files
 
-The worst SNR (-1dB) file filtered by CAPRICEP
+Please refer to Fig.5 of the reference.
+
+ ### The worst SNR (-1dB) file filtered by CAPRICEP
+
 capricepWorstSNRminus1dB.wav
 
-The worst SNR (6dB) file filtered by CAPRICEP
+### The best SNR (6dB) file filtered by CAPRICEP
+
 capricepBestSNR6dB.wav
 
-The original file (level adjusted to CAPRICEP samples)
+### The original file (level adjusted to CAPRICEP samples)
+
 originalLevelAdjusted.wav
