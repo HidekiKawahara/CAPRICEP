@@ -20,6 +20,11 @@ We illustrate using acoustic measurements and data augmentation as representativ
 We open-sourced MATLAB implementation. 
 It consists of an interactive and real-time acoustic tool, MATLAB functions, and supporting materials.
 
+## Interactive and real-time acoustic measurement tool
+Currently the following links to an FVN-based tool. Will be updated to CAPRICEP-based one soon.
+[![Watch the video](https://i9.ytimg.com/vi/yT7N1MITKzY/mq2.jpg?sqp=CJiIiP0F&rs=AOn4CLA4HoiAaHmgQ_Tk4GNrvIV2fDuf7Q)](https://youtu.be/yT7N1MITKzY)
+
+
 ## Sample files
 
 The following files sound pervcptually indistinguishable (at least for me).
