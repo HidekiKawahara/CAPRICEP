@@ -42,3 +42,7 @@ capricepBestSNR6dB.wav
 ### The original file (level adjusted to CAPRICEP samples)
 
 originalLevelAdjusted.wav
+
+## Memo (working)
+
+### Uploaded unit-CAPRICEPs for 100, 200, 400, 800, and 1600 ms
