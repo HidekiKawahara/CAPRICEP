@@ -1,7 +1,7 @@
 # CAPRICEP
 New TSP
 
-Coming soon! Keep watching!
+Coming soon! Keep watching! Currently I am updating. Please do not download for the time being. (Tue Nov 10 16:51:34 JST 2020)
 
 ## Reference
 
