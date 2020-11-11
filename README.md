@@ -29,15 +29,15 @@ Try "realTimeTester" to invoke the tool.
 
 Try:
 
-Fs = 44100;
-tResponse = 200;
-nRepetition = 30;
-outChannel = 'L-ch';
-inChannel = 1;
-
-analysisStr = capricepResponseTest(fs, tResponse, nRepetition, outChannel, inChannel)
-specStr = capricepResponseAnalysis(analysisStr)
-reportStr = capricepResponseReport(specStr)
+    Fs = 44100;
+    tResponse = 200;
+    nRepetition = 30;
+    outChannel = 'L-ch';
+    inChannel = 1;
+    
+    analysisStr = capricepResponseTest(fs, tResponse, nRepetition, outChannel, inChannel)
+    specStr = capricepResponseAnalysis(analysisStr)
+    reportStr = capricepResponseReport(specStr)
 
 For usual room, tResponse = 400; provides better result in the low-frequency end. 800 is better for a classroom.
 
