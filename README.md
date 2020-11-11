@@ -1,7 +1,7 @@
 # CAPRICEP
 New TSP
 
-Coming soon! Keep watching! Currently I am updating. Please do not download for the time being. (Tue Nov 10 16:51:34 JST 2020)
+All components are uploaded. Type "realTimeTester" to start the application. Supporting materials will be ready soon. (Wed Nov 11 11:31:20 JST 2020)
 
 ## Reference
 
