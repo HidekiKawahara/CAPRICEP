@@ -22,7 +22,7 @@ It consists of an interactive and real-time acoustic tool, MATLAB functions, and
 
 ## Interactive and real-time acoustic measurement tool
 Currently the following links to an FVN-based tool. Will be updated to CAPRICEP-based one today (05.Nov.2020).
-[![Watch the video](fvnAcousticTool.jpg)](https://youtu.be/yT7N1MITKzY)
+[![Watch the video](capricepAcousticTool.jpg)](https://youtu.be/mT0-pDgd2VM)
 
 
 ## Sample files
