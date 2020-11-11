@@ -21,9 +21,25 @@ We open-sourced MATLAB implementation.
 It consists of an interactive and real-time acoustic tool, MATLAB functions, and supporting materials.
 
 ## Interactive and real-time acoustic measurement tool
-Currently the following links to an FVN-based tool. Will be updated to CAPRICEP-based one today (05.Nov.2020).
+
+Try "realTimeTester" to invoke the tool.
 [![Watch the video](capricepAcousticTool.jpg)](https://youtu.be/mT0-pDgd2VM)
 
+## Off-line acoustic measurement
+
+Try:
+
+    Fs = 44100;
+    tResponse = 200;
+    nRepetition = 30;
+    outChannel = 'L-ch';
+    inChannel = 1;
+    
+    analysisStr = capricepResponseTest(fs, tResponse, nRepetition, outChannel, inChannel)
+    specStr = capricepResponseAnalysis(analysisStr)
+    reportStr = capricepResponseReport(specStr)
+
+For usual room, tResponse = 400; provides better result in the low-frequency end. 800 is better for a classroom.
 
 ## Sample files
 
