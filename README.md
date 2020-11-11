@@ -1,7 +1,7 @@
 # CAPRICEP
 New TSP
 
-Coming soon! Keep watching! Currently I am updating. Please do not download for the time being. (Tue Nov 10 16:51:34 JST 2020)
+All components are uploaded. Type "realTimeTester" to start the application. Supporting materials will be ready soon. (Wed Nov 11 11:31:20 JST 2020)
 
 ## Reference
 
@@ -22,7 +22,7 @@ It consists of an interactive and real-time acoustic tool, MATLAB functions, and
 
 ## Interactive and real-time acoustic measurement tool
 Currently the following links to an FVN-based tool. Will be updated to CAPRICEP-based one today (05.Nov.2020).
-[![Watch the video](fvnAcousticTool.jpg)](https://youtu.be/yT7N1MITKzY)
+[![Watch the video](capricepAcousticTool.jpg)](https://youtu.be/mT0-pDgd2VM)
 
 
 ## Sample files
@@ -45,5 +45,6 @@ originalLevelAdjusted.wav
 
 ## Memo (working)
 
+### All components are uploaded. Type "realTimeTester" to start the application
 ### Added off-line analysis function
 ### Uploaded unit-CAPRICEPs for 100, 200, 400, 800, and 1600 ms
