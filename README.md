@@ -61,6 +61,7 @@ originalLevelAdjusted.wav
 
 ## Memo (working)
 
+### Detailed report added (13 Nov. 2020).
 ### Figure appearance compatibility in report is now better (12 Nov. 2020).
 ### All components are uploaded. Type "realTimeTester" to start the application
 ### Added off-line analysis function
