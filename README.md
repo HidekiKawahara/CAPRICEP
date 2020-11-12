@@ -61,6 +61,7 @@ originalLevelAdjusted.wav
 
 ## Memo (working)
 
+### Figure appearance compatibility in report is now better (12 Nov. 2020).
 ### All components are uploaded. Type "realTimeTester" to start the application
 ### Added off-line analysis function
 ### Uploaded unit-CAPRICEPs for 100, 200, 400, 800, and 1600 ms
