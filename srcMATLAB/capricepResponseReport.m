@@ -86,7 +86,8 @@ fxH = fx * 2^(1/6);
 fxL = fx * 2^(-1/6);
 fbw = fxH - fxL;
 fbw(1) = fbw(2);
-figureHandleReport = figure;
+figureHandleReport = figure('unit', 'centimeters');
+set(figureHandleReport, 'position',[23.9889   19.6850   19.7556   14.8167]);
 smLongPowerSpec = (interp1(fx, cumsum(longPowerSpec) * fx(2), fxH, 'linear', 'extrap') ...
     - interp1(fx, cumsum(longPowerSpec) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
 smShortPowerSpec = (interp1(fx, cumsum(shortPowerSpec) * fx(2), fxH, 'linear', 'extrap') ...
@@ -103,7 +104,7 @@ semilogx(fx, 10*log10(smShortPowerSpec)-totalLevel, 'linewidth', 2);
 semilogx(fx, 10*log10(smDevPowerSpec)-totalLevel, 'linewidth', 2);
 semilogx(fx, 10*log10(smRandPowerSpec)-totalLevel, 'linewidth', 2);
 semilogx(fx, 10*log10(smPrePowerSpec)-totalLevel, 'linewidth', 2);
-set(gca, 'fontsize', 16, 'linewidth', 2)
+set(gca, 'fontsize', 16, 'linewidth', 2, 'fontname', 'Helvetica')
 legend('LTI-L', 'LTI-S', 'nonL-TI', 'RNTV', 'preBG', 'Location', "south", "numcolumns", 5);
 axis([10 fs/2 -60 20])
 xlabel('frequency (Hz)')
