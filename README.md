@@ -25,6 +25,8 @@ It consists of an interactive and real-time acoustic tool, MATLAB functions, and
 Try "realTimeTester" to invoke the tool.
 [![Watch the video](capricepAcousticTool.jpg)](https://youtu.be/mT0-pDgd2VM)
 
+Use "capResultReporter" for visualize and report the measurement results
+
 ## Off-line acoustic measurement
 
 Try:
@@ -61,6 +63,7 @@ originalLevelAdjusted.wav
 
 ## Memo (working)
 
+### Visualization and report function is added (20 Nov. 2020).
 ### Detailed report added (13 Nov. 2020).
 ### Figure appearance compatibility in report is now better (12 Nov. 2020).
 ### All components are uploaded. Type "realTimeTester" to start the application
