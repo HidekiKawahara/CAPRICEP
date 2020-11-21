@@ -63,6 +63,7 @@ originalLevelAdjusted.wav
 
 ## Memo (working)
 
+### Added test folder
 ### Visualization and report function is added (20 Nov. 2020).
 ### Detailed report added (13 Nov. 2020).
 ### Figure appearance compatibility in report is now better (12 Nov. 2020).
