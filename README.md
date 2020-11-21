@@ -23,7 +23,7 @@ It consists of an interactive and real-time acoustic tool, MATLAB functions, and
 ## Interactive and real-time acoustic measurement tool
 
 Try "realTimeTester" to invoke the tool.
-[![Watch the video](capricepAcousticTool.jpg)](https://youtu.be/mT0-pDgd2VM)
+[![Watch the video](capricepAcousticTool.jpg)](https://youtu.be/A3kw0irMZks)
 
 Use "capResultReporter" for visualize and report the measurement results
 
