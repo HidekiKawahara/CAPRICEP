@@ -52,9 +52,9 @@ for jj = 1:length(initMarginList)
         iterId = iterId + 1;
         [~, bestIndex10] = min(abs(fixedCumResp(tx < tx(end)/2) - noiseResp(tx < tx(end)/2) + biasL));
         [~, best10ms] = min(abs(tx - initialMargin));
-        tTrim = tx(best10ms:bestIndex10);
+        tTrim = tx(best10ms:max(best10ms + 441, bestIndex10));
         H = [tTrim, ones(length(tTrim), 1)];
-        regCoeff = (H'* H) \ (H'*fixedCumResp(best10ms:bestIndex10));
+        regCoeff = (H'* H) \ (H'*fixedCumResp(best10ms:max(best10ms + 441, bestIndex10)));
         reverberationTimeDistribution(iterId) = -60/regCoeff(1);
     end
 end
@@ -100,9 +100,10 @@ for ii = 1:length(2:3:length(fcList))
             iterId = iterId + 1;
             [~, bestIndex10] = min(abs(fixedCumResp(tx < tx(end)/2) - noiseResp(tx < tx(end)/2) + biasL));
             [~, best35ms] = min(abs(tx - initialMargin));
-            tTrim = tx(best35ms:bestIndex10);
+            %tTrim = tx(best35ms:bestIndex10);
+            tTrim = tx(best35ms:max(best35ms + 441, bestIndex10));
             H = [tTrim, ones(length(tTrim), 1)];
-            regCoeff = (H'*H) \ (H'*fixedCumResp(best35ms:bestIndex10));
+            regCoeff = (H'*H) \ (H'*fixedCumResp(best35ms:max(best35ms + 441, bestIndex10)));
             revTimeList(ii, iterId) = -60/regCoeff(1);
         end
     end

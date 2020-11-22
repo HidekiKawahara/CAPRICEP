@@ -157,9 +157,9 @@ orthogonalSilence = orthogonalSilence / sqrt(8);
 %% ----- analysis location alignment
 %
 tmpIdx = (1:length(yr))';
-sumSignal = fftfilt(hanning(5), abs(sum(orthogonalSignal(:, 1:3),2)));
+sumSignal = fftfilt(hanning(45), abs(sum(orthogonalSignal(:, 1:3),2)));
 maxSignal = max(abs(sumSignal));
-sigPeaks = tmpIdx(abs(sumSignal) > 0.95 * maxSignal & sumSignal > sumSignal([1 1:end-1]) & sumSignal >= sumSignal([2:end end])); 
+sigPeaks = tmpIdx(abs(sumSignal) > 0.95 * maxSignal & sumSignal > sumSignal([1 1:end-1]) & sumSignal >= sumSignal([2:end end])) - 22; 
 %safeSigPeaks = sigPeaks(2:end-1); % needs some safety checker hear!
 safeSigPeaksLong = sigPeaks(2:2:end-4);
 %
