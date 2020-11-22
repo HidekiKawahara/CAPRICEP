@@ -157,9 +157,9 @@ orthogonalSilence = orthogonalSilence / sqrt(8);
 %% ----- analysis location alignment
 %
 tmpIdx = (1:length(yr))';
-sumSignal = sum(orthogonalSignal(:, 1:3),2);
+sumSignal = fftfilt(hanning(5), abs(sum(orthogonalSignal(:, 1:3),2)));
 maxSignal = max(abs(sumSignal));
-sigPeaks = tmpIdx(abs(sumSignal) > 0.95 * maxSignal); 
+sigPeaks = tmpIdx(abs(sumSignal) > 0.95 * maxSignal & sumSignal > sumSignal([1 1:end-1]) & sumSignal >= sumSignal([2:end end])); 
 %safeSigPeaks = sigPeaks(2:end-1); % needs some safety checker hear!
 safeSigPeaksLong = sigPeaks(2:2:end-4);
 %
@@ -183,11 +183,14 @@ averageSilence = averageSilence / sqrt(length(safeSigPeaksLong));
 %
 respExtendedRaw = (orthogonalSignal(:, 1) + orthogonalSignal(:, 2)) / 4 + orthogonalSignal(:, 3) / 2;
 averageLongResponse = zeros(4 * nto, 1);
+averageLongRTVcomp = zeros(4 * nto, 1);
 for ii = 1:length(safeSigPeaksLong)
     selIdx = (1:4 * nto) - headMargin + safeSigPeaksLong(1) +  (ii - 1) * 8 * nto;
     averageLongResponse = averageLongResponse + respExtendedRaw(selIdx);
+    averageLongRTVcomp = averageLongRTVcomp + orthogonalSignal(selIdx, 4);
 end
 averageLongResponse = averageLongResponse / length(safeSigPeaksLong);
+averageLongRTVcomp = averageLongRTVcomp / length(safeSigPeaksLong);
 
 %% ----- spectrum analysis
 deviationResponse = rawShortResponse(1:nto, 1:3) ...
@@ -224,6 +227,7 @@ output.timeAxisShort = ((1:nto)' - headMargin) / fs;
 output.timeAxisLong = ((1:4*nto)' - headMargin) / fs;
 output.headMarginSample = headMargin;
 output.averageLongResponse = averageLongResponse;
+output.averageLongRTVcomp = averageLongRTVcomp;
 output.orthogonalSignal = orthogonalSignal;
 output.sumSignal = sumSignal;
 output.lAeq = analysisStr.lAeq;

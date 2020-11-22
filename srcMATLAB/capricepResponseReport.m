@@ -146,6 +146,7 @@ ylabel('level (dB)')
 
 
 output.specStr = specStr;
+output.revStr = revStr;
 output.figureHandleReport = figureHandleReport;
 
 end

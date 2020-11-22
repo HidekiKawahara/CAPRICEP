@@ -1,18 +1,46 @@
 function output = impulse2revtime(specStr)
+%  impulse response to reverberation time converter
+%  output = impulse2revtime(specStr)
+%
+%  Argument
+%    specStr      : structure variable of spectrum analysis
+%    
+% Output
+%    output    : structure variable with the following fields
+%           specStr          : copy of the analysis results
+%           reportStr        : copy of the report results
+%
+%
+% Licence 
+% Copyright 2020 Hideki Kawahara
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%
+%    http://www.apache.org/licenses/LICENSE-2.0
+%
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
 
 strtTic = tic;
 fs = specStr.fs;
 aweightfilter = weightingFilter("A-weighting", fs);
 strtTic2 = tic;
-xa = aweightfilter(specStr.averageShortResponse);
+xa = aweightfilter(specStr.averageLongResponse);
+xn = aweightfilter(specStr.averageLongRTVcomp);
 strtTic3 = tic;
-tx = specStr.timeAxisShort;
+tx = specStr.timeAxisLong;
+[~, idxHlf] = min(abs(tx - tx(end)/2));
 revPower = cumsum(abs(xa).^2, "reverse");
-xnStd = std(xa(tx > tx(end)/2));
-simNoise = ones(length(tx), 1) * xnStd;
-revNoiseSimPower = cumsum(abs(simNoise).^2, "reverse");
-fixedCumResp = 10*log10(abs(revPower - revNoiseSimPower));
-noiseResp = 10*log10(revNoiseSimPower);
+revRTVPower = cumsum(abs(xn).^2, "reverse");
+dBmismatch = 10*log10(revRTVPower(idxHlf) / revPower(idxHlf));
+revRTVPower = revRTVPower / revRTVPower(idxHlf) * revPower(idxHlf);
+fixedCumResp = 10*log10(abs(revPower - revRTVPower));
+noiseResp = 10*log10(revRTVPower);
 initMarginList = 0.020:0.001:0.035;
 biasExt = 0:0.3:5;
 reverberationTimeDistribution = zeros(length(initMarginList)*length(biasExt), 1);
@@ -26,7 +54,7 @@ for jj = 1:length(initMarginList)
         [~, best10ms] = min(abs(tx - initialMargin));
         tTrim = tx(best10ms:bestIndex10);
         H = [tTrim, ones(length(tTrim), 1)];
-        regCoeff = (H'*H) \ (H'*fixedCumResp(best10ms:bestIndex10));
+        regCoeff = (H'* H) \ (H'*fixedCumResp(best10ms:bestIndex10));
         reverberationTimeDistribution(iterId) = -60/regCoeff(1);
     end
 end
@@ -35,9 +63,11 @@ directRevDiffDB = 10*log10(sum(xa(tx < tbound).^2))-10*log10(sum(xa(tx > tbound)
 magFactor = 10^(directRevDiffDB/20);
 octStr = designOctabeFilger(specStr);
 octRevStr = octaveReverb(specStr, octStr);
+%%
 output.octStr = octStr;
 output.octRevStr = octRevStr;
 output.magFactor = magFactor;
+output.dBmismatch = dBmismatch;
 output.reverberationTimeDistribution = reverberationTimeDistribution;
 output.reverberationTime = median(reverberationTimeDistribution);
 output.totalElapsedTime = toc(strtTic);
@@ -49,18 +79,19 @@ function octRevStr = octaveReverb(specStr, octStr)
 fs = specStr.fs;
 fcList = octStr.fcList;
 filtOut = octStr.filtOut;
-nte = round(fs*specStr.tResponse/1000*4);
-tx = (1:nte)'/fs;
+filtOutRV = octStr.filtOutRV;
+nte = round(fs*specStr.tResponse*4/1000);
+tx = ((1:nte)' - octStr.maxNtc)/fs;
+[~, idxHlf] = min(abs(tx - tx(end)/2));
 initMarginList = 0.020:0.001:0.035;
 biasExt = 0:0.3:5;
 revTimeList = zeros(length(2:3:length(fcList)),length(initMarginList)*length(biasExt));
 for ii = 1:length(2:3:length(fcList))
-    xnStd = sqrt(mean(filtOut(round(nte/2):nte, ii) .^2));
-    simNoise = ones(length(tx), 1) * xnStd;
     revPower = cumsum(abs(filtOut(1:nte, ii)).^2, "reverse");
-    revNoiseSimPower = cumsum(abs(simNoise).^2, "reverse");
-    fixedCumResp = 10*log10(abs(revPower - revNoiseSimPower));
-    noiseResp = 10*log10(revNoiseSimPower);
+    revRVPower = cumsum(abs(filtOutRV(1:nte, ii)).^2, "reverse")/2;
+    revRVPower = revRVPower / revRVPower(idxHlf) * revPower(idxHlf);
+    fixedCumResp = 10*log10(abs(revPower - revRVPower));
+    noiseResp = 10*log10(revRVPower);
     iterId = 0;
     for jj = 1:length(initMarginList)
         initialMargin = initMarginList(jj);
@@ -85,8 +116,9 @@ function octStr = designOctabeFilger(specStr)
 fs = specStr.fs;
 fftlw = 2^ceil(log2(length(specStr.averageLongResponse)*2));
 fcList = 50 * 2 .^(0:1/3:log2(fs/2/50));
-fxw = (0:fftlw-1)/fftlw*fs;
+%fxw = (0:fftlw-1)/fftlw*fs;
 octFilter = zeros(fftlw, length(fcList));
+maxNtc = 0;
 for ii = 1:length(fcList)
     fc = fcList(ii);
     ntc = round(3*fs/fc);
@@ -94,6 +126,9 @@ for ii = 1:length(fcList)
     tmt = ((1:2*ntc+1)' - ntc)/fs;
     idx = fftlw/2 + (-ntc:ntc)';
     octFilter(idx, ii) = w/sum(w) .* exp(2*1i*pi*fc*tmt);
+    if maxNtc < ntc
+        maxNtc = ntc;
+    end
 end
 
 octFilterSet = zeros(fftlw, length(2:3:length(fcList)));
@@ -106,15 +141,23 @@ for ii = 2:3:length(fcList)
 end
 
 tmpOcFilter = fftshift(octFilterSet,1);
+tmpOcFilter = circshift(tmpOcFilter,maxNtc);
 octFilterFx = fft(tmpOcFilter);
 xTmp = zeros(fftlw,1);
+xRVTmp = zeros(fftlw,1);
 xTmp(1:length(specStr.averageLongResponse)) = specStr.averageLongResponse;
+xRVTmp(1:length(specStr.averageLongResponse)) = specStr.averageLongRTVcomp;
 xFx = fft(xTmp);
+xRVFx = fft(xRVTmp);
 filtOut = zeros(fftlw, length(2:3:length(fcList)));
+filtOutRV = zeros(fftlw, length(2:3:length(fcList)));
 for ii = 1:length(2:3:length(fcList))
     filtOut(:, ii) = abs(ifft(xFx .* octFilterFx(:, ii)));
+    filtOutRV(:, ii) = abs(ifft(xRVFx .* octFilterFx(:, ii)));
 end
 octStr.filtOut = filtOut;
+octStr.filtOutRV = filtOutRV;
+octStr.maxNtc = maxNtc;
 octStr.fcList = fcList;
 octStr.fcOctFilter = fcOctFilter;
 end
