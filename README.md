@@ -63,6 +63,7 @@ originalLevelAdjusted.wav
 
 ## Memo (working)
 
+### Event detection refinement 
 ### Bug fix in reverberation time and made robust (23 Nov. 2020)
 ### Added test folder
 ### Visualization and report function is added (20 Nov. 2020).
