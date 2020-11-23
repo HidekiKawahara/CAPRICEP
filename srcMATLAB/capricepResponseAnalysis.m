@@ -159,9 +159,29 @@ orthogonalSilence = orthogonalSilence / sqrt(8);
 tmpIdx = (1:length(yr))';
 sumSignal = fftfilt(hanning(45), abs(sum(orthogonalSignal(:, 1:3),2)));
 maxSignal = max(abs(sumSignal));
-sigPeaks = tmpIdx(abs(sumSignal) > 0.95 * maxSignal & sumSignal > sumSignal([1 1:end-1]) & sumSignal >= sumSignal([2:end end])) - 22; 
+sigPeaksRaw = tmpIdx(abs(sumSignal) > 0.95 * maxSignal & sumSignal > sumSignal([1 1:end-1]) & sumSignal >= sumSignal([2:end end])); 
+sigPeaks = sigPeaksRaw;
+peakId = 0;
+ii = 1;
+idxBase = 1:length(sigPeaksRaw);
+while ii <= length(sigPeaksRaw)
+    if sum(abs(sigPeaksRaw(ii) - sigPeaksRaw) < 441) > 1
+        peakId = peakId + 1;
+        sigPeaksTmp = sigPeaksRaw(abs(sigPeaksRaw(ii) - sigPeaksRaw) < 441);
+        idxTmp = idxBase(abs(sigPeaksRaw(ii) - sigPeaksRaw) < 441);
+        [~, idxPeak] = max(sumSignal(abs(sigPeaksRaw(ii) - sigPeaksRaw) < 441));
+        sigPeaks(peakId) = sigPeaksTmp(idxPeak);
+        ii = max(idxTmp) + 1;
+    elseif sum(abs(sigPeaksRaw(ii) - sigPeaksRaw) < 441) == 1
+        peakId = peakId + 1;
+        sigPeaks(peakId) = sigPeaksRaw(ii);
+        ii = ii + 1;
+    end
+end
+sigPeaks = sigPeaks(1:peakId) - 22;
+
 %safeSigPeaks = sigPeaks(2:end-1); % needs some safety checker hear!
-safeSigPeaksLong = sigPeaks(2:2:end-4);
+safeSigPeaksLong = sigPeaks(2:2:end-1);
 %
 %% ----- individual and average short responses
 %

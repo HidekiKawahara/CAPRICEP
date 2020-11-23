@@ -36,11 +36,12 @@ strtTic3 = tic;
 tx = specStr.timeAxisLong;
 [~, idxHlf] = min(abs(tx - tx(end)/2));
 revPower = cumsum(abs(xa).^2, "reverse");
-revRTVPower = cumsum(abs(xn).^2, "reverse");
-dBmismatch = 10*log10(revRTVPower(idxHlf) / revPower(idxHlf));
-revRTVPower = revRTVPower / revRTVPower(idxHlf) * revPower(idxHlf);
+revRTVPowerRaw = cumsum(abs(xn).^2, "reverse");
+dBmismatch = 10*log10(revRTVPowerRaw(idxHlf) / revPower(idxHlf));
+revRTVPower = revRTVPowerRaw / revRTVPowerRaw(idxHlf) * revPower(idxHlf);
 fixedCumResp = 10*log10(abs(revPower - revRTVPower));
 noiseResp = 10*log10(revRTVPower);
+%%
 initMarginList = 0.020:0.001:0.035;
 biasExt = 0:0.3:5;
 reverberationTimeDistribution = zeros(length(initMarginList)*length(biasExt), 1);
