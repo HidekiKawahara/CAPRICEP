@@ -63,9 +63,11 @@ originalLevelAdjusted.wav
 
 ## Links to installer of compiled stand alone application
 
+### Installer for macOS
 [![macOS installer](macInstaller.jpg)](https://drive.google.com/drive/folders/1nLikx4MNhkP7XruCFxCyZhWOnN2tTCti?usp=sharing)
 Please download this folder as a whole. 
 
+### Installer for Windows10 (64bit)
 [![Windows10 (64bit) installer](winInstaller.jpg)](https://drive.google.com/file/d/18Loh_LDrEUnzkiqvT5OhqwCnKfj44cme/view?usp=sharing)
 
 ## Memo (working)
