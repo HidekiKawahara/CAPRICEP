@@ -61,8 +61,16 @@ capricepBestSNR6dB.wav
 
 originalLevelAdjusted.wav
 
+## Links to installer of compiled stand alone application
+
+[![macOS installer](macInstaller.jpg)](https://drive.google.com/drive/folders/1nLikx4MNhkP7XruCFxCyZhWOnN2tTCti?usp=sharing)
+Please download this folder as a whole. 
+
+[![Windows10 (64bit) installer](winInstaller.jpg)](https://drive.google.com/file/d/18Loh_LDrEUnzkiqvT5OhqwCnKfj44cme/view?usp=sharing)
+
 ## Memo (working)
 
+### Event detection refinement 
 ### Bug fix in reverberation time and made robust (23 Nov. 2020)
 ### Added test folder
 ### Visualization and report function is added (20 Nov. 2020).
