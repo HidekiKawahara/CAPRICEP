@@ -72,6 +72,7 @@ Please download this folder as a whole.
 
 ## Memo (working)
 
+### Data inspection fundtion added (24 Nov. 2020)
 ### Event detection refinement 
 ### Bug fix in reverberation time and made robust (23 Nov. 2020)
 ### Added test folder
