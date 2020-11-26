@@ -106,49 +106,50 @@ B4 = [1 1 1 1 1 1 1 1;1 -1 1 -1 1 -1 1 -1;1 1 -1 -1 1 1 -1 -1;1 1 1 1 -1 -1 -1 -
 nto = round(tResponse / 1000 * fs);
 outChannel = analysisStr.outChannel;
 numChannels = analysisStr.numChannels;
-%
+inChannel = size(y,2);
+%% 
 %------ equalization of pink noise shaping
 %
 yr = filter(pinkLPC, 1, y);
 fftl = size(xTSPSel, 1);
 nRepetition = analysisStr.nRepetition;
 nItem = 0;
-simSilence = zeros(2 * length(yr), 1);
+simSilence = zeros(2 * length(yr), inChannel);
 while nItem < length(yr) + 2 * fs
     endp = round(fs/2+rand(1,1)*fs/3);
 %    tmpSig = [];
-    tmpSig = [yr(200:endp);yr(endp-1:-1:201)];
-    simSilence(nItem + (1:length(tmpSig))) = tmpSig;
+    tmpSig = [yr(200:endp, :);yr(endp-1:-1:201, :)];
+    simSilence(nItem + (1:length(tmpSig)), :) = tmpSig;
     nItem = nItem + length(tmpSig);
 end
-simSilence = simSilence(fs + (1:length(yr)));
+simSilence = simSilence(fs + (1:length(yr)), :);
 simSilence = simSilence - mean(simSilence);
-%
+%%
 %------ pulse recovery (compression)
 %
 selectInvIndex = fftl / 2 + (3*nto:-1:-3*nto);
 xTSPSelIv = xTSPSel(selectInvIndex, :);
-compSignal = zeros(length(yr), 4);
+compSignal = zeros(length(yr), inChannel, 4);
 baseIdx = (1:length(yr));
 
-compSignal(:, 1) = fftfilt(xTSPSelIv(:, 1), yr);
-compSignal(:, 2) = fftfilt(xTSPSelIv(:, 2), yr);
-compSignal(:, 3) = fftfilt(xTSPSelIv(:, 3), yr);
-compSignal(:, 4) = fftfilt(xTSPSelIv(:, 4), yr);
+compSignal(:, :, 1) = fftfilt(xTSPSelIv(:, 1), yr);
+compSignal(:, :, 2) = fftfilt(xTSPSelIv(:, 2), yr);
+compSignal(:, :, 3) = fftfilt(xTSPSelIv(:, 3), yr);
+compSignal(:, :, 4) = fftfilt(xTSPSelIv(:, 4), yr);
 compSilence = fftfilt(xTSPSelIv(:, 1), simSilence);
 %
 %------- orthogonalization
 %
-orthogonalSignal = zeros(length(yr), 4);
-orthogonalSilence = zeros(length(yr), 1);
+orthogonalSignal = zeros(length(yr), inChannel, 4);
+orthogonalSilence = zeros(length(yr), inChannel);
 for ii = 1:8
     tmpIdx = min(length(yr), baseIdx + (ii - 1) * nto);
     for jj = 1:4
-        orthogonalSignal(:, jj) = orthogonalSignal(:, jj) ...
-            + B4(jj, ii) * compSignal(tmpIdx, jj);
+        orthogonalSignal(:, :, jj) = orthogonalSignal(:, :, jj) ...
+            + B4(jj, ii) * compSignal(tmpIdx, :, jj);
     end
     orthogonalSilence = orthogonalSilence ...
-        + compSilence(tmpIdx);
+        + compSilence(tmpIdx, :);
 end
 %dmy = 1;
 orthogonalSignal = orthogonalSignal / 8;
@@ -157,7 +158,7 @@ orthogonalSilence = orthogonalSilence / sqrt(8);
 %% ----- analysis location alignment
 %
 tmpIdx = (1:length(yr))';
-sumSignal = fftfilt(hanning(45), abs(sum(orthogonalSignal(:, 1:3),2)));
+sumSignal = fftfilt(hanning(45), abs(sum(orthogonalSignal(:, 1, 1:3),3)));
 maxSignal = max(abs(sumSignal));
 sigPeaksRaw = tmpIdx(abs(sumSignal) > 0.95 * maxSignal & sumSignal > sumSignal([1 1:end-1]) & sumSignal >= sumSignal([2:end end])); 
 sigPeaks = sigPeaksRaw;
@@ -185,15 +186,15 @@ safeSigPeaksLong = sigPeaks(2:2:end-1);
 %
 %% ----- individual and average short responses
 %
-headMargin = round(fs * 0.01); % 1 ms preceding margin
-averageShortResponse = zeros(nto, 1);
-rawShortResponse = zeros(nto, 4);
-averageSilence = zeros(nto, 1);
+headMargin = round(fs * 0.01); % 10 ms preceding margin
+averageShortResponse = zeros(nto, inChannel);
+rawShortResponse = zeros(nto, inChannel, 4);
+averageSilence = zeros(nto, inChannel);
 for ii = 1:length(safeSigPeaksLong)
     selIdx = (1:nto) - headMargin + safeSigPeaksLong(1) + (ii - 1) * 8 * nto;
-    rawShortResponse = rawShortResponse + orthogonalSignal(selIdx, :);
-    averageShortResponse = averageShortResponse + sum(orthogonalSignal(selIdx, 1:3), 2);
-    averageSilence = averageSilence + orthogonalSilence(selIdx);
+    rawShortResponse = rawShortResponse + orthogonalSignal(selIdx, :, :);
+    averageShortResponse = averageShortResponse + sum(orthogonalSignal(selIdx, :, 1:3), 3);
+    averageSilence = averageSilence + orthogonalSilence(selIdx, :);
 end
 averageShortResponse = averageShortResponse / length(safeSigPeaksLong) / 3;
 rawShortResponse = rawShortResponse / length(safeSigPeaksLong);
@@ -201,33 +202,37 @@ averageSilence = averageSilence / sqrt(length(safeSigPeaksLong));
 %
 %% ----- averaged long response (four times)
 %
-respExtendedRaw = (orthogonalSignal(:, 1) + orthogonalSignal(:, 2)) / 4 + orthogonalSignal(:, 3) / 2;
-averageLongResponse = zeros(4 * nto, 1);
-averageLongRTVcomp = zeros(4 * nto, 1);
+respExtendedRaw = (orthogonalSignal(:, :, 1) + orthogonalSignal(:, :, 2)) / 4 + orthogonalSignal(:, :, 3) / 2;
+averageLongResponse = zeros(4 * nto, inChannel);
+averageLongRTVcomp = zeros(4 * nto, inChannel);
 for ii = 1:length(safeSigPeaksLong)
     selIdx = (1:4 * nto) - headMargin + safeSigPeaksLong(1) +  (ii - 1) * 8 * nto;
-    averageLongResponse = averageLongResponse + respExtendedRaw(selIdx);
-    averageLongRTVcomp = averageLongRTVcomp + orthogonalSignal(selIdx, 4);
+    averageLongResponse = averageLongResponse + respExtendedRaw(selIdx, :);
+    averageLongRTVcomp = averageLongRTVcomp + orthogonalSignal(selIdx, :, 4);
 end
 averageLongResponse = averageLongResponse / length(safeSigPeaksLong);
 averageLongRTVcomp = averageLongRTVcomp / length(safeSigPeaksLong);
 
 %% ----- spectrum analysis
-deviationResponse = rawShortResponse(1:nto, 1:3) ...
-    - [averageShortResponse averageShortResponse averageShortResponse];
+tmpAverageResponse = zeros(nto, inChannel, 3);
+tmpAverageResponse(:, :, 1) = averageShortResponse;
+tmpAverageResponse(:, :, 2) = averageShortResponse;
+tmpAverageResponse(:, :, 3) = averageShortResponse;
+deviationResponse = rawShortResponse(1:nto, :, 1:3) - tmpAverageResponse;
+%    - [averageShortResponse averageShortResponse averageShortResponse];
 %for ii = 1:3
 %    for jj = 1:3
 %        deviationResponse(:, ii) = deviationResponse(:, ii) + averageLongResponse(jj * nto + (1:nto))/3;
 %    end
 %end
 for ii = 1:3
-    deviationResponse(:, ii) = deviationResponse(:, ii) - mean(deviationResponse(:, ii));
+    deviationResponse(:, :, ii) = deviationResponse(:, :, ii) - mean(deviationResponse(:, :, ii));
 end
 deviationSpec = fft(deviationResponse, fftl);
-randomSpec = fft(rawShortResponse(:,4), fftl);
+randomSpec = fft(rawShortResponse(:,:, 4), fftl);
 output.shortSpec = fft(averageShortResponse, fftl);
 output.longSpec = fft(averageLongResponse, fftl);
-output.deviationPowerSpec = sum(abs(deviationSpec) .^2, 2)/2 * length(safeSigPeaksLong);
+output.deviationPowerSpec = sum(abs(deviationSpec) .^2, 3)/2 * length(safeSigPeaksLong);
 output.randomPowerSpec = abs(randomSpec) .^2 * 8 * length(safeSigPeaksLong) / 3;
 output.frequencyAxis = (0:fftl-1)/fftl * fs;
 output.prePowerSpec = abs(fft(averageSilence, fftl)) .^2 / 3;

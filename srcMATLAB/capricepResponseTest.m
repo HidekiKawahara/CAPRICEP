@@ -15,7 +15,7 @@ function output = capricepResponseTest(fs, tResponse, nRepetition, outChannel, i
 %   nRepetition    : number of repetitions of unit-CAPRICEPs
 %                    30 or more is recommended
 %   outChannel     : output channel ID, 1 or 2. 1 is for L-channel
-%   inChannel      : input channel name: currently 'L-ch' is only acceptable
+%   inChannel      : nunber of input channels
 %   testMode       : test mode, 'acoustic_system' (default) or 'simulator'
 %   option         : structure with the following fields for simulator
 %      calibrationConst   : a constant to convert to sound pressure level
@@ -132,10 +132,22 @@ switch testMode
                 xOut = [xTestPink xTestPink * 0];
             case 'R-ch'
                 xOut = [xTestPink * 0 xTestPink];
+            otherwise
+                disp("use L-ch or R-ch");
+                output = [];
+                return;
         end
         nBits = 24;
         playerObj = audioplayer(xOut, fs, nBits);
-        recorderObj = audiorecorder(fs, nBits, inChannel);
+        if audiodevinfo(1,-1,fs,nBits,inChannel)
+            recorderObj = audiorecorder(fs, nBits, inChannel);
+        else
+            disp("This device does not support;  fs:" + num2str(fs) ...
+                + " (Hs)  nBits:" + num2str(nBits) + "  nChannel:" ...
+                + num2str(inChannel));
+            output = [];
+            return;
+        end
         numChannels = get(recorderObj, 'NumChannels');
         record(recorderObj);
         pause(1)
@@ -160,34 +172,34 @@ end
 %------
 weightFilt = weightingFilter('A-weighting' ,fs);
 yAweight = weightFilt(y);
-lAeq = 20*log10(std(yAweight(round(length(y) / 2) + (-nto:nto)))) + calibrationConst;
+lAeq = 20*log10(std(yAweight(round(length(y) / 2) + (-nto:nto), :))) + calibrationConst;
 middleTic = tic;
 yr = filter(pinkLPC, 1, y);
 %------
 selectInvIndex = fftl / 2 + (3*nto:-1:-3*nto);
 xTSPSelIv = xTSPSel(selectInvIndex, :);
-compSignal = zeros(length(yr), 4);
+compSignal = zeros(length(yr), inChannel, 4);
 compSignalRef = zeros(length(yr), 4);
 baseIdx = (1:length(yr));
 testIdx = (1:length(xTest)) + fs;
 
-compSignal(:, 1) = fftfilt(xTSPSelIv(:, 1), yr);
-compSignal(:, 2) = fftfilt(xTSPSelIv(:, 2), yr);
-compSignal(:, 3) = fftfilt(xTSPSelIv(:, 3), yr);
-compSignal(:, 4) = fftfilt(xTSPSelIv(:, 4), yr);
+compSignal(:, :, 1) = fftfilt(xTSPSelIv(:, 1), yr);
+compSignal(:, :, 2) = fftfilt(xTSPSelIv(:, 2), yr);
+compSignal(:, :, 3) = fftfilt(xTSPSelIv(:, 3), yr);
+compSignal(:, :, 4) = fftfilt(xTSPSelIv(:, 4), yr);
 
 compSignalRef(testIdx, 1) = fftfilt(xTSPSelIv(:, 1), xTest);
 compSignalRef(testIdx, 2) = fftfilt(xTSPSelIv(:, 2), xTest);
 compSignalRef(testIdx, 3) = fftfilt(xTSPSelIv(:, 3), xTest);
 compSignalRef(testIdx, 4) = fftfilt(xTSPSelIv(:, 4), xTest);
 
-orthogonalSignal = zeros(length(yr), 4);
+orthogonalSignal = zeros(length(yr), inChannel, 4);
 orthogonalSignalRef = zeros(length(yr), 4);
 for ii = 1:8
     tmpIdx = min(length(yr), baseIdx + (ii - 1) * nto);
     for jj = 1:4
-        orthogonalSignal(:, jj) = orthogonalSignal(:, jj) ...
-            + B4(jj, ii) * compSignal(tmpIdx, jj);
+        orthogonalSignal(:, :, jj) = orthogonalSignal(:, :, jj) ...
+            + B4(jj, ii) * compSignal(tmpIdx, :, jj);
         orthogonalSignalRef(:, jj) = orthogonalSignalRef(:, jj) ...
             + B4(jj, ii) * compSignalRef(tmpIdx, jj);
     end
