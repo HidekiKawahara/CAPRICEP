@@ -51,7 +51,7 @@ Please refer to Fig.5 of the reference.
 
  ### The worst SNR (-1dB) file filtered by CAPRICEP
 
-[![Worst SNR](play.png)](capricepWorstSNRminus1dB.wav)""
+capricepWorstSNRminus1dB.wav
 
 ### The best SNR (6dB) file filtered by CAPRICEP
 
@@ -72,6 +72,7 @@ Please download this folder as a whole.
 
 ## Memo (working)
 
+### Generalized for multi input channels (27 Nov. 2020) Note: only for off-line measurement
 ### Data inspection fundtion added (24 Nov. 2020)
 ### Event detection refinement 
 ### Bug fix in reverberation time and made robust (23 Nov. 2020)
