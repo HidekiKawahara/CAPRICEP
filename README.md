@@ -51,7 +51,7 @@ Please refer to Fig.5 of the reference.
 
  ### The worst SNR (-1dB) file filtered by CAPRICEP
 
-capricepWorstSNRminus1dB.wav
+[![Worst SNR](play.png)](capricepWorstSNRminus1dB.wav)""
 
 ### The best SNR (6dB) file filtered by CAPRICEP
 
