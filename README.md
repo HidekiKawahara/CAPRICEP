@@ -1,7 +1,7 @@
 # CAPRICEP
 New TSP
 
-All components are uploaded. Type "realTimeTester" to start the application. Supporting materials will be ready soon. (Wed Nov 11 11:31:20 JST 2020)
+All components are uploaded. Type "realTimeTester" to start the application. Supporting materials will be ready soon. 
 
 ## Reference
 
@@ -72,6 +72,7 @@ Please download this folder as a whole.
 
 ## Memo (working)
 
+### Multi channel input (30 Nov. 2020)
 ### Generalized for multi input channels and added test code (27 Nov. 2020) Note: only for off-line measurement
 ### Data inspection fundtion added (24 Nov. 2020)
 ### Event detection refinement 
