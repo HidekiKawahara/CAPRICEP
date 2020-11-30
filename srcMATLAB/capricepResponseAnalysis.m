@@ -105,8 +105,13 @@ xTSPSel = tmp.xTSPSel;
 B4 = [1 1 1 1 1 1 1 1;1 -1 1 -1 1 -1 1 -1;1 1 -1 -1 1 1 -1 -1;1 1 1 1 -1 -1 -1 -1];
 nto = round(tResponse / 1000 * fs);
 outChannel = analysisStr.outChannel;
-numChannels = analysisStr.numChannels;
+%numChannels = analysisStr.numChannels;
 inChannel = size(y,2);
+if isfield(analysisStr, 'selectedChannels')
+    numChannels = length(analysisStr.selectedChannels);
+else
+    numChannels = inChannel;
+end
 %% 
 %------ equalization of pink noise shaping
 %
@@ -255,6 +260,7 @@ output.averageLongResponse = averageLongResponse;
 output.averageLongRTVcomp = averageLongRTVcomp;
 output.orthogonalSignal = orthogonalSignal;
 output.sumSignal = sumSignal;
+output.selectedChannels = analysisStr.selectedChannels;
 output.lAeq = analysisStr.lAeq;
 output.elapsedTime = toc(startTic);
 end

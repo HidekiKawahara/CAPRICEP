@@ -19,6 +19,7 @@ function output = capricepResponseTest(fs, tResponse, nRepetition, outChannel, i
 %   testMode       : test mode, 'acoustic_system' (default) or 'simulator'
 %   option         : structure with the following fields for simulator
 %      calibrationConst   : a constant to convert to sound pressure level
+%      selectedChannels   : a set of channel IDs to record
 %                  : following fields are internally set
 %        option.fs = fs;
 %        option.nto = nto;
@@ -68,11 +69,18 @@ function output = capricepResponseTest(fs, tResponse, nRepetition, outChannel, i
 switch nargin
     case 5
         testMode = 'acoustic_system';
+        selectedChannels = 1:inChannel;
         calibrationConst = 0;
     case 7
         testMode = varargin{1};
         option = varargin{2};
         calibrationConst = option.calibrationConst;
+        if isfield(option, 'selectedChannels')
+            selectedChannels = option.selectedChannels;
+            calibrationConst = option.calibrationConst(selectedChannels);
+        else
+            selectedChannels = 1:inChannel;
+        end
 end
 startTic = tic;
 switch fs
@@ -158,6 +166,13 @@ switch testMode
         switch inChannel
             case 1
                 y = y(:, 1);
+            otherwise
+                if length(selectedChannels) == 1
+                    inChannel = 1;
+                    y = y(:, selectedChannels);
+                else
+                    y = y(:, selectedChannels);
+                end
         end
     case 'simulator'
         numChannels = 1;
@@ -216,6 +231,7 @@ output.pinkLPC = pinkLPC;
 output.xTestPink = xTestPinkOrg;
 output.outChannel = outChannel;
 output.numChannels = numChannels;
+output.selectedChannels = selectedChannels;
 output.testSignalDuration = tTestSignal;
 output.yRecorded = y;
 output.yRecovered = yr;

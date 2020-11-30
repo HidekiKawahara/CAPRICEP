@@ -1,7 +1,7 @@
 function output = capricepResponseReport(specStr)
 % Report generation from the analysis results
 % output = capricepResponseReport(specStr)
-% 
+%
 %  This version is tentative
 %
 % Argument
@@ -39,7 +39,7 @@ function output = capricepResponseReport(specStr)
 %           figureHandleReport     : handle of the report
 %
 %
-% Licence 
+% Licence
 % Copyright 2020 Hideki Kawahara
 %
 % Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,101 +56,103 @@ function output = capricepResponseReport(specStr)
 
 output.specStr = specStr;
 numInChannel = specStr.numChannels;
+selectedChannels = specStr.selectedChannels;
 for inChannel = 1:numInChannel
-
-fx = specStr.frequencyAxis;
-fs = specStr.fs;
-longSpec = specStr.longSpec(:, inChannel);
-longPowerSpec = abs(longSpec) .^ 2;
-shortSpec = specStr.shortSpec(:, inChannel);
-shortPowerSpec = abs(shortSpec) .^ 2;
-prePowerSpec = specStr.prePowerSpec(:, inChannel);
-totalLevel = 10*log10(mean(longPowerSpec));
-%fftl = length(fx);
-
-
-fxH = fx * 2^(1/6);
-fxL = fx * 2^(-1/6);
-fbw = fxH - fxL;
-fbw(1) = fbw(2);
-figureHandleReport = figure('unit', 'centimeters');
-%set(figureHandleReport, 'position',[23.9889   19.6850   19.7556   14.8167]);
-set(figureHandleReport, 'position', [33    7.0556   21   29.7])
-%------------------------------------------
-subplot(311);
-%smLongPowerSpec = (interp1(fx, cumsum(longPowerSpec) * fx(2), fxH, 'linear', 'extrap') ...
-%    - interp1(fx, cumsum(longPowerSpec) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
-smShortPowerSpec = (interp1(fx, cumsum(shortPowerSpec) * fx(2), fxH, 'linear', 'extrap') ...
-    - interp1(fx, cumsum(shortPowerSpec) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
-smDevPowerSpec = (interp1(fx, cumsum(specStr.deviationPowerSpec(:, inChannel)) * fx(2), fxH, 'linear', 'extrap') ...
-    - interp1(fx, cumsum(specStr.deviationPowerSpec(:, inChannel)) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
-smRandPowerSpec = (interp1(fx, cumsum(specStr.randomPowerSpec(:, inChannel)) * fx(2), fxH, 'linear', 'extrap') ...
-    - interp1(fx, cumsum(specStr.randomPowerSpec(:, inChannel)) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
-smPrePowerSpec = (interp1(fx, cumsum(prePowerSpec) * fx(2), fxH, 'linear', 'extrap') ...
-    - interp1(fx, cumsum(prePowerSpec) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
-semilogx(fx, 20*log10(abs(specStr.shortSpec(:, inChannel)))-totalLevel, 'linewidth', 1, 'color', 0.6*[1 1 1]);grid on;
-hold all
-%semilogx(fx, 10*log10(smLongPowerSpec)-totalLevel, 'linewidth', 2);grid on;
-semilogx(fx, 10*log10(smShortPowerSpec)-totalLevel, 'k','linewidth', 2);
-semilogx(fx, 10*log10(smDevPowerSpec)-totalLevel, 'linewidth', 2);
-semilogx(fx, 10*log10(smRandPowerSpec)-totalLevel, 'linewidth', 2);
-semilogx(fx, 10*log10(smPrePowerSpec)-totalLevel, 'linewidth', 2);
-set(gca, 'fontsize', 14, 'linewidth', 2, 'fontname', 'Helvetica')
-legend('LTI-L', 'LTI-S', 'nonL-TI', 'RNTV', 'preBG', 'Location', "south", "numcolumns", 5);
-axis([10 fs/2 -70 20])
-xlabel('frequency (Hz)')
-ylabel('gain (rel. dB)')
-if isfield(specStr, 'dataFile')
-    title(specStr.dataFile, "Tr:" + num2str(specStr.tResponse) + " ms " + specStr.outChannel ...
-        + " LAeq:" + num2str(specStr.lAeq(inChannel)) + " dB inChID:" + num2str(inChannel));
-else
-    title("Tr:" + num2str(specStr.tResponse) + " ms " + specStr.outChannel ...
-        + " LAeq:" + num2str(specStr.lAeq(inChannel)) + " dB inChID:" + num2str(inChannel));
-end
-
-%-----------------------------------------------
-subplot(325);
-plot(specStr.timeAxisShort * 1000, ...
-    specStr.averageShortResponse(:, inChannel)/max(abs(specStr.averageShortResponse(:, inChannel))), 'k');grid on;
-axis([-0.3 3 -1 1])
-set(gca, 'fontsize', 14, 'linewidth', 2, 'fontname', 'Helvetica')
-xlabel('time (ms)')
-
-%-----------------------------------------------
-
-subplot(312)
-revStr = impulse2revtime(specStr, inChannel);
-semilogx(revStr.octRevStr.fcOctFilter, revStr.octRevStr.revTimeList, 'color', 0.7*[1 1 1]);
-hold all
-semilogx(revStr.octRevStr.fcOctFilter, revStr.octRevStr.revtimeMedian, 'ko-', 'LineWidth', 2);
-grid on;
-axis([10 fs/2 0 max(revStr.octRevStr.revTimeList(:)) *1.1])
-set(gca, 'fontsize', 14, 'linewidth', 2, 'fontname', 'Helvetica')
-xlabel('center frequency (Hz)')
-ylabel('reverb. time (s)')
-
-%-----------------------------------------------
-subplot(3,2,6);
-pwResp = 10*log10(abs(fftfilt(hanning(21), specStr.averageShortResponse(:, inChannel).^2)));
-txTmp = specStr.timeAxisShort * 1000;
-nItr = length(revStr.reverberationTimeDistribution);
-for ii = 1:nItr
-    tmpRev = revStr.reverberationTimeDistribution(ii);
-    plot([0 txTmp(end)], [0 -60 * txTmp(end)/1000/tmpRev], 'color', 0.7*[1 1 1]);
+    
+    fx = specStr.frequencyAxis;
+    fs = specStr.fs;
+    longSpec = specStr.longSpec(:, inChannel);
+    longPowerSpec = abs(longSpec) .^ 2;
+    shortSpec = specStr.shortSpec(:, inChannel);
+    shortPowerSpec = abs(shortSpec) .^ 2;
+    prePowerSpec = specStr.prePowerSpec(:, inChannel);
+    totalLevel = 10*log10(mean(longPowerSpec));
+    %fftl = length(fx);
+    
+    
+    fxH = fx * 2^(1/6);
+    fxL = fx * 2^(-1/6);
+    fbw = fxH - fxL;
+    fbw(1) = fbw(2);
+    figureHandleReport = figure('unit', 'centimeters');
+    %set(figureHandleReport, 'position',[23.9889   19.6850   19.7556   14.8167]);
+    set(figureHandleReport, 'position', [33    7.0556   21   29.7])
+    %------------------------------------------
+    subplot(311);
+    %smLongPowerSpec = (interp1(fx, cumsum(longPowerSpec) * fx(2), fxH, 'linear', 'extrap') ...
+    %    - interp1(fx, cumsum(longPowerSpec) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
+    smShortPowerSpec = (interp1(fx, cumsum(shortPowerSpec) * fx(2), fxH, 'linear', 'extrap') ...
+        - interp1(fx, cumsum(shortPowerSpec) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
+    smDevPowerSpec = (interp1(fx, cumsum(specStr.deviationPowerSpec(:, inChannel)) * fx(2), fxH, 'linear', 'extrap') ...
+        - interp1(fx, cumsum(specStr.deviationPowerSpec(:, inChannel)) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
+    smRandPowerSpec = (interp1(fx, cumsum(specStr.randomPowerSpec(:, inChannel)) * fx(2), fxH, 'linear', 'extrap') ...
+        - interp1(fx, cumsum(specStr.randomPowerSpec(:, inChannel)) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
+    smPrePowerSpec = (interp1(fx, cumsum(prePowerSpec) * fx(2), fxH, 'linear', 'extrap') ...
+        - interp1(fx, cumsum(prePowerSpec) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
+    semilogx(fx, 20*log10(abs(specStr.shortSpec(:, inChannel)))-totalLevel, 'linewidth', 1, 'color', 0.6*[1 1 1]);grid on;
     hold all
+    %semilogx(fx, 10*log10(smLongPowerSpec)-totalLevel, 'linewidth', 2);grid on;
+    semilogx(fx, 10*log10(smShortPowerSpec)-totalLevel, 'k','linewidth', 2);
+    semilogx(fx, 10*log10(smDevPowerSpec)-totalLevel, 'linewidth', 2);
+    semilogx(fx, 10*log10(smRandPowerSpec)-totalLevel, 'linewidth', 2);
+    semilogx(fx, 10*log10(smPrePowerSpec)-totalLevel, 'linewidth', 2);
+    set(gca, 'fontsize', 14, 'linewidth', 2, 'fontname', 'Helvetica')
+    legend('LTI-L', 'LTI-S', 'nonL-TI', 'RNTV', 'preBG', 'Location', "south", "numcolumns", 5);
+    axis([10 fs/2 -70 20])
+    xlabel('frequency (Hz)')
+    ylabel('gain (rel. dB)')
+    if isfield(specStr, 'dataFile')
+        title(specStr.dataFile, "Tr:" + num2str(specStr.tResponse) + " ms " + specStr.outChannel ...
+            + " LAeq:" + num2str(specStr.lAeq(inChannel)) + " dB inChID:" + num2str(selectedChannels(inChannel)));
+    else
+        title("Tr:" + num2str(specStr.tResponse) + " ms " + specStr.outChannel ...
+            + " LAeq:" + num2str(specStr.lAeq(inChannel)) + " dB inChID:" + num2str(selectedChannels(inChannel)));
+    end
+    
+    %-----------------------------------------------
+    subplot(325);
+    plot(specStr.timeAxisShort * 1000, ...
+        specStr.averageShortResponse(:, inChannel)/max(abs(specStr.averageShortResponse(:, inChannel))), 'k');grid on;
+    axis([-0.8 3 -1 1])
+    set(gca, 'fontsize', 14, 'linewidth', 2, 'fontname', 'Helvetica')
+    xlabel('time (ms)')
+    
+    %-----------------------------------------------
+    
+    subplot(312)
+    revStr = impulse2revtime(specStr, inChannel);
+    semilogx(revStr.octRevStr.fcOctFilter, revStr.octRevStr.revTimeList, 'color', 0.7*[1 1 1]);
+    hold all
+    semilogx(revStr.octRevStr.fcOctFilter, revStr.octRevStr.revtimeMedian, 'ko-', 'LineWidth', 2);
+    grid on;
+    axis([10 fs/2 0 max(revStr.octRevStr.revTimeList(:)) *1.1])
+    set(gca, 'fontsize', 14, 'linewidth', 2, 'fontname', 'Helvetica')
+    xlabel('center frequency (Hz)')
+    ylabel('reverb. time (s)')
+    
+    %-----------------------------------------------
+    subplot(3,2,6);
+    pwResp = 10*log10(abs(fftfilt(hanning(21), specStr.averageShortResponse(:, inChannel).^2)));
+    txTmp = specStr.timeAxisShort * 1000;
+    nItr = length(revStr.reverberationTimeDistribution);
+    for ii = 1:nItr
+        tmpRev = revStr.reverberationTimeDistribution(ii);
+        plot([0 txTmp(end)], [0 -60 * txTmp(end)/1000/tmpRev], 'color', 0.7*[1 1 1]);
+        hold all
+    end
+    revTimeA = revStr.reverberationTime;
+    plot([0 txTmp(end)], [0 -60 * txTmp(end)/1000/revTimeA] ,'linewidth', 2, 'color', 0.5*[0 1 0]);
+    plot(txTmp, pwResp - max(pwResp), 'k');grid on
+    axis([txTmp(1) txTmp(end) -90 0]);
+    text(txTmp(end)/2, -10, "RRc:" + num2str(revStr.magFactor,'%4.1f'));
+    set(gca, 'fontsize', 14, 'linewidth', 2, 'fontname', 'Helvetica')
+    xlabel('time (ms)')
+    ylabel('level (dB)')
+    
+    
+    output.revStr(inChannel) = revStr;
+    output.figureHandleReport(inChannel) = figureHandleReport;
 end
-revTimeA = revStr.reverberationTime;
-plot([0 txTmp(end)], [0 -60 * txTmp(end)/1000/revTimeA] ,'linewidth', 2, 'color', 0.5*[0 1 0]);
-plot(txTmp, pwResp - max(pwResp), 'k');grid on
-axis([txTmp(1) txTmp(end) -90 0]);
-text(txTmp(end)/2, -10, "RRc:" + num2str(revStr.magFactor,'%4.1f'));
-set(gca, 'fontsize', 14, 'linewidth', 2, 'fontname', 'Helvetica')
-xlabel('time (ms)')
-ylabel('level (dB)')
-
-
-output.revStr(inChannel) = revStr;
-output.figureHandleReport(inChannel) = figureHandleReport;
-end
+output.selectedChannels = selectedChannels;
 
 end
