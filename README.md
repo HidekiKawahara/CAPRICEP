@@ -63,6 +63,8 @@ originalLevelAdjusted.wav
 
 ## Links to installer of compiled stand alone application
 
+These installers are not up to date (30 Nov. 2020). They will be updated by 2 Dec. 2020;
+
 ### Installer for macOS
 [![macOS installer](macInstaller.jpg)](https://drive.google.com/drive/folders/1nLikx4MNhkP7XruCFxCyZhWOnN2tTCti?usp=sharing)
 Please download this folder as a whole. 
