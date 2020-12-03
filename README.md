@@ -47,7 +47,7 @@ For usual room, tResponse = 400; provides better result in the low-frequency end
 
 The following files sound pervcptually indistinguishable (at least for me).
 
-Please refer to Fig.5 of the reference.
+Please refer to Fig.5 of the reference. Please download and check.
 
  ### The worst SNR (-1dB) file filtered by CAPRICEP
 
