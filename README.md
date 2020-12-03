@@ -74,6 +74,7 @@ Please download this folder as a whole.
 
 ## Memo (working)
 
+### Revised for resilience (02 Dec. 2020)
 ### Multi channel input (30 Nov. 2020)
 ### Generalized for multi input channels and added test code (27 Nov. 2020) Note: only for off-line measurement
 ### Data inspection fundtion added (24 Nov. 2020)
