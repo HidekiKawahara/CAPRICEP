@@ -1,5 +1,5 @@
 # CAPRICEP
-New TSP
+An extended TSP (Time Stretched Pulse) that enables interactive and real-time measurement of the linear time-invariant, the non-linear time-invariant, and random and time varying responses simultaneously. This is the substantial revision of FVN and related tools. I will stop updating FVN.
 
 All components are uploaded. Type "realTimeTester" to start the application. Supporting materials will be ready soon. 
 
@@ -47,7 +47,7 @@ For usual room, tResponse = 400; provides better result in the low-frequency end
 
 The following files sound pervcptually indistinguishable (at least for me).
 
-Please refer to Fig.5 of the reference.
+Please refer to Fig.5 of the reference. Please download and check.
 
  ### The worst SNR (-1dB) file filtered by CAPRICEP
 
