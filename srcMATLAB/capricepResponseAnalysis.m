@@ -188,6 +188,19 @@ sigPeaks = sigPeaks(1:peakId) - 22;
 
 %safeSigPeaks = sigPeaks(2:end-1); % needs some safety checker hear!
 safeSigPeaksLong = sigPeaks(2:2:end-1);
+%%   initial point refinmement
+
+headMargin = round(fs * 0.02); % 20 ms preceding margin
+averageShortResponse = zeros(nto, inChannel);
+for ii = 1:length(safeSigPeaksLong)
+    selIdx = (1:nto) - headMargin + safeSigPeaksLong(1) + (ii - 1) * 8 * nto;
+    averageShortResponse = averageShortResponse + sum(orthogonalSignal(selIdx, :, 1:3), 3);
+end
+tmp = averageShortResponse / length(safeSigPeaksLong) / 3;
+cumPower = cumsum(tmp.^2)/sum(tmp.^2);
+tmpIdx = 1:length(tmp);
+headLocation = min(tmpIdx(cumPower > 0.01));
+safeSigPeaksLong = safeSigPeaksLong - (headMargin - headLocation);
 %
 %% ----- individual and average short responses
 %
