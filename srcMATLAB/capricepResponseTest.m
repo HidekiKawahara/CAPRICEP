@@ -14,7 +14,7 @@ function output = capricepResponseTest(fs, tResponse, nRepetition, outChannel, i
 %                      100, 200, 400, 800
 %   nRepetition    : number of repetitions of unit-CAPRICEPs
 %                    30 or more is recommended
-%   outChannel     : output channel ID, 1 or 2. 1 is for L-channel
+%   outChannel     : output channel: 'L-CH' or 'R-CH'
 %   inChannel      : nunber of input channels
 %   testMode       : test mode, 'acoustic_system' (default) or 'simulator'
 %   option         : structure with the following fields for simulator
@@ -96,13 +96,39 @@ switch fs
                 tspName = "setCAPRICEP800msRc.mat";
             otherwise
                 output = [];
-                disp("Available response time is 100, 200, 400 ms, and 800 ms for the time being");
+                disp("Available response time is 100, 200, 400 ms, and 800 ms with 44100 Hz for the time being");
+                return;
+        end
+    case 176400
+        switch tResponse
+            case 100
+                tspName = "setCAPRICEP400msRc.mat";
+            case 200
+                tspName = "setCAPRICEP800msRc.mat";
+            case 400
+                tspName = "setCAPRICEP1600msRc.mat";
+            otherwise
+                output = [];
+                disp("Available response time is 100, 200, and 400 ms with 176400 Hz for the time being");
+                return;
+        end
+    case 192000
+        switch tResponse
+            case 100
+                tspName = "setCAPRICEP400msRc.mat";
+            case 200
+                tspName = "setCAPRICEP800msRc.mat";
+            case 400
+                tspName = "setCAPRICEP1600msRc.mat";
+            otherwise
+                output = [];
+                disp("Available response time is 100, 200, and 400 ms with 192000 Hz for the time being");
                 return;
         end
         tmp = load(tspName);
     otherwise
         output = [];
-        disp("Availabel sampling frequency is 44100 Hz, for the time being.")
+        disp("Availabel sampling frequency is 44100 Hz, 176400 Hz, and 192000 Hz for the time being.")
         return;
 end
 %---- test sequence ----
