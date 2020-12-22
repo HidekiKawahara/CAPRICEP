@@ -74,6 +74,7 @@ Please download this folder as a whole.
 
 ## Memo (working)
 
+### Bug fix for off-line measurement (22 Dec. 2020)
 ### Added 176400 Hz and 192000 Hz sampling frequency for off-line measurement functions
 ### Revised event detection (05 Dec. 2020)
 ### Revised for resilience (02 Dec. 2020)
