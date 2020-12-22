@@ -74,6 +74,7 @@ Please download this folder as a whole.
 
 ## Memo (working)
 
+### Added 176400 Hz and 192000 Hz sampling frequency for off-line measurement functions
 ### Revised event detection (05 Dec. 2020)
 ### Revised for resilience (02 Dec. 2020)
 ### Multi channel input (30 Nov. 2020)
