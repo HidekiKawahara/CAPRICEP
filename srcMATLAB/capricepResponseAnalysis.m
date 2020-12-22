@@ -95,6 +95,7 @@ switch fs
                 disp("Available response time is 100, 200, and 400 ms, 800 ms, for the time being");
                 return;
         end
+        tmp = load(tspName);
     case 176400
         switch tResponse
             case 100
@@ -108,6 +109,7 @@ switch fs
                 disp("Available response time is 100, 200, and 400 ms with 176400 Hz for the time being");
                 return;
         end
+        tmp = load(tspName);
     case 192000
         switch tResponse
             case 100

@@ -82,6 +82,8 @@ switch nargin
             selectedChannels = 1:inChannel;
         end
 end
+redDevInfo = info(audioDeviceReader);
+playDevInfo = info(audioDeviceWriter);
 startTic = tic;
 switch fs
     case 44100
@@ -99,6 +101,7 @@ switch fs
                 disp("Available response time is 100, 200, 400 ms, and 800 ms with 44100 Hz for the time being");
                 return;
         end
+        tmp = load(tspName);
     case 176400
         switch tResponse
             case 100
@@ -112,6 +115,7 @@ switch fs
                 disp("Available response time is 100, 200, and 400 ms with 176400 Hz for the time being");
                 return;
         end
+        tmp = load(tspName);
     case 192000
         switch tResponse
             case 100
@@ -248,6 +252,8 @@ end
 
 
 output.fs = fs;
+output.redDevInfo = redDevInfo;
+output.playDevInfo = playDevInfo;
 output.tspName = tspName;
 output.tResponse = tResponse;
 output.nRepetition = nRepetition;
