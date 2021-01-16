@@ -282,6 +282,10 @@ output.deviationPowerSpec = sum(abs(deviationSpec) .^2, 3)/2 * length(safeSigPea
 output.randomPowerSpec = abs(randomSpec) .^2 * 8 * length(safeSigPeaksLong) / 3;
 output.frequencyAxis = (0:fftl-1)/fftl * fs;
 output.prePowerSpec = abs(fft(averageSilence, fftl)) .^2 / 3;
+%% calibration information recovery
+weightFilt = weightingFilter('A-weighting' ,fs);
+yAweight = weightFilt(analysisStr.yRecorded);
+caliblationConst = analysisStr.lAeq - 20*log10(std(yAweight(round(length(analysisStr.yRecorded) / 2) + (-nto:nto), :)));
 
 %%
 output.fs = fs;
@@ -302,6 +306,7 @@ output.averageLongRTVcomp = averageLongRTVcomp;
 output.orthogonalSignal = orthogonalSignal;
 output.sumSignal = sumSignal;
 output.selectedChannels = analysisStr.selectedChannels;
+output.caliblationConst = caliblationConst;
 output.lAeq = analysisStr.lAeq;
 output.elapsedTime = toc(startTic);
 end

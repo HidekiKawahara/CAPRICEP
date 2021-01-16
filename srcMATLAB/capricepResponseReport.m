@@ -57,6 +57,7 @@ function output = capricepResponseReport(specStr)
 output.specStr = specStr;
 numInChannel = specStr.numChannels;
 selectedChannels = specStr.selectedChannels;
+caliblationConst = specStr.caliblationConst;
 for inChannel = 1:numInChannel
     
     fx = specStr.frequencyAxis;
@@ -66,7 +67,7 @@ for inChannel = 1:numInChannel
     shortSpec = specStr.shortSpec(:, inChannel);
     shortPowerSpec = abs(shortSpec) .^ 2;
     prePowerSpec = specStr.prePowerSpec(:, inChannel);
-    totalLevel = 10*log10(mean(longPowerSpec));
+    totalLevel = 10*log10(mean(longPowerSpec)) - caliblationConst(inChannel) + 10*log10(fs / 2) ;
     %fftl = length(fx);
     
     
@@ -98,9 +99,9 @@ for inChannel = 1:numInChannel
     semilogx(fx, 10*log10(smPrePowerSpec)-totalLevel, 'linewidth', 2);
     set(gca, 'fontsize', 14, 'linewidth', 2, 'fontname', 'Helvetica')
     legend('LTI-L', 'LTI-S', 'nonL-TI', 'RNTV', 'preBG', 'Location', "south", "numcolumns", 5);
-    axis([10 fs/2 -70 20])
+    axis([10 fs/2 [-70 20] + caliblationConst(inChannel) - 10*log10(fs / 2)])
     xlabel('frequency (Hz)')
-    ylabel('gain (rel. dB)')
+    ylabel('SPL (dB re. 20\mu Pa)')
     if isfield(specStr, 'dataFile')
         title(specStr.dataFile, "Tr:" + num2str(specStr.tResponse) + " ms " + specStr.outChannel ...
             + " LAeq:" + num2str(specStr.lAeq(inChannel)) + " dB inChID:" + num2str(selectedChannels(inChannel)));
