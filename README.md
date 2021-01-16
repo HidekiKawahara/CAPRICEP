@@ -66,11 +66,11 @@ originalLevelAdjusted.wav
 These installers are not up to date (30 Nov. 2020). They will be updated by 2 Dec. 2020;
 
 ### Installer for macOS
-[![macOS installer](macInstaller.jpg)](https://drive.google.com/drive/folders/1nLikx4MNhkP7XruCFxCyZhWOnN2tTCti?usp=sharing)
+[![macOS installer](macInstaller.jpg)](https://drive.google.com/drive/folders/1v0TTaMb3Ka2xAND4TOLt_eaov3qfePtq?usp=sharing)
 Please download this folder as a whole. 
 
 ### Installer for Windows10 (64bit)
-[![Windows10 (64bit) installer](winInstaller.jpg)](https://drive.google.com/file/d/18Loh_LDrEUnzkiqvT5OhqwCnKfj44cme/view?usp=sharing)
+[![Windows10 (64bit) installer](winInstaller.jpg)](https://drive.google.com/file/d/12tj_JiQiDLYMiBZaEckRQCQy0aaxfFpb/view?usp=sharing)
 
 ## Memo (working)
 
