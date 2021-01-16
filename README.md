@@ -74,6 +74,7 @@ Please download this folder as a whole.
 
 ## Memo (working)
 
+### 192kHz sampling rate for off-line measurement is added (16.Jan. 2021)
 ### Buf fix for report vertical axis shouw sound pressure level now (16 Jan. 2021)
 ### Bug fix for off-line measurement (22 Dec. 2020)
 ### Added 176400 Hz and 192000 Hz sampling frequency for off-line measurement functions
