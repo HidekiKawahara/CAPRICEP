@@ -74,6 +74,7 @@ Please download this folder as a whole.
 
 ## Memo (working)
 
+### 192kHz sampling measurement is now functional on Windows (23 Jan. 2021)
 ### Binary installers are updated (17 Jan. 2021)
 ### 192kHz sampling rate for off-line measurement is added (16.Jan. 2021)
 ### Buf fix for report vertical axis shouw sound pressure level now (16 Jan. 2021)
