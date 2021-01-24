@@ -74,6 +74,7 @@ Please download this folder as a whole.
 
 ## Memo (working)
 
+### Voice memo fix for ASIO compatibility (25 Jan. 2021)
 ### Tuning for Windows (24 Jan. 2021)
 ### Minor fix of GUI behavior (23 Jun. 2021)
 ### 192kHz sampling measurement is now functional on Windows (23 Jan. 2021)
