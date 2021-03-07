@@ -283,9 +283,13 @@ output.randomPowerSpec = abs(randomSpec) .^2 * 8 * length(safeSigPeaksLong) / 3;
 output.frequencyAxis = (0:fftl-1)/fftl * fs;
 output.prePowerSpec = abs(fft(averageSilence, fftl)) .^2 / 3;
 %% calibration information recovery
+if analysisStr.caliblationConst == 0
 weightFilt = weightingFilter('A-weighting' ,fs);
 yAweight = weightFilt(analysisStr.yRecorded);
 caliblationConst = analysisStr.lAeq - 20*log10(std(yAweight(round(length(analysisStr.yRecorded) / 2) + (-nto:nto), :)));
+else
+    caliblationConst = analysisStr.caliblationConst;
+end
 
 %%
 output.fs = fs;
