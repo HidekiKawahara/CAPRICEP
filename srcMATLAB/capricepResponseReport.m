@@ -57,7 +57,7 @@ function output = capricepResponseReport(specStr)
 output.specStr = specStr;
 numInChannel = specStr.numChannels;
 selectedChannels = specStr.selectedChannels;
-caliblationConst = specStr.caliblationConst;
+calibrationConst = specStr.calibrationConst;
 for inChannel = 1:numInChannel
     
     fx = specStr.frequencyAxis;
@@ -67,7 +67,8 @@ for inChannel = 1:numInChannel
     shortSpec = specStr.shortSpec(:, inChannel);
     shortPowerSpec = abs(shortSpec) .^ 2;
     prePowerSpec = specStr.prePowerSpec(:, inChannel);
-    totalLevel = 10*log10(mean(longPowerSpec)) - caliblationConst(inChannel) + 10*log10(fs / 2) ;
+    %totalLevel = 10*log10(mean(longPowerSpec)) + calibrationConst(inChannel) - 10*log10(fs / 2) ;
+    fixLevel = calibrationConst(inChannel) - 10*log10(fs / 2) ;
     %fftl = length(fx);
     
     
@@ -90,24 +91,25 @@ for inChannel = 1:numInChannel
         - interp1(fx, cumsum(specStr.randomPowerSpec(:, inChannel)) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
     smPrePowerSpec = (interp1(fx, cumsum(prePowerSpec) * fx(2), fxH, 'linear', 'extrap') ...
         - interp1(fx, cumsum(prePowerSpec) * fx(2), fxL, 'linear', 'extrap')) ./ fbw;
-    semilogx(fx, 20*log10(abs(specStr.shortSpec(:, inChannel)))-totalLevel, 'linewidth', 1, 'color', 0.6*[1 1 1]);grid on;
+    semilogx(fx, 20*log10(abs(specStr.shortSpec(:, inChannel))) + fixLevel, 'linewidth', 1, 'color', 0.6*[1 1 1]);grid on;
     hold all
     %semilogx(fx, 10*log10(smLongPowerSpec)-totalLevel, 'linewidth', 2);grid on;
-    semilogx(fx, 10*log10(smShortPowerSpec)-totalLevel, 'k','linewidth', 2);
-    semilogx(fx, 10*log10(smDevPowerSpec)-totalLevel, 'linewidth', 2);
-    semilogx(fx, 10*log10(smRandPowerSpec)-totalLevel, 'linewidth', 2);
-    semilogx(fx, 10*log10(smPrePowerSpec)-totalLevel, 'linewidth', 2);
+    semilogx(fx, 10*log10(smShortPowerSpec) + fixLevel, 'k','linewidth', 2);
+    semilogx(fx, 10*log10(smDevPowerSpec) + fixLevel, 'linewidth', 2);
+    semilogx(fx, 10*log10(smRandPowerSpec) + fixLevel, 'linewidth', 2);
+    semilogx(fx, 10*log10(smPrePowerSpec) + fixLevel, 'linewidth', 2);
     set(gca, 'fontsize', 14, 'linewidth', 2, 'fontname', 'Helvetica')
     legend('LTI-L', 'LTI-S', 'nonL-TI', 'RNTV', 'preBG', 'Location', "south", "numcolumns", 5);
-    axis([10 fs/2 [-70 20] + caliblationConst(inChannel) - 10*log10(fs / 2)])
+    %axis([10 fs/2 [-70 20] + calibrationConst(inChannel) - 10*log10(fs / 2) + 10*log10(mean(longPowerSpec))] )
+    axis([10 fs/2 [-90 10] + specStr.lAeq(inChannel)])
     xlabel('frequency (Hz)')
     ylabel('SPL (dB re. 20\mu Pa)')
     if isfield(specStr, 'dataFile')
         title(specStr.dataFile, "Tr:" + num2str(specStr.tResponse) + " ms " + specStr.outChannel ...
-            + " LAeq:" + num2str(specStr.lAeq(inChannel)) + " dB inChID:" + num2str(selectedChannels(inChannel)));
+            + " LAeq:" + num2str(specStr.lAeq(inChannel), '%5.1f') + " dB inChID:" + num2str(selectedChannels(inChannel)));
     else
         title("Tr:" + num2str(specStr.tResponse) + " ms " + specStr.outChannel ...
-            + " LAeq:" + num2str(specStr.lAeq(inChannel)) + " dB inChID:" + num2str(selectedChannels(inChannel)));
+            + " LAeq:" + num2str(specStr.lAeq(inChannel), '%5.1f') + " dB inChID:" + num2str(selectedChannels(inChannel)));
     end
     
     %-----------------------------------------------
