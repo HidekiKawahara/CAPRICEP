@@ -74,6 +74,7 @@ Please download this folder as a whole.
 
 ## Memo (working)
 
+### Calibration error and driver compatibility issue fixed (08 March 2021)
 ### Voice memo fix for ASIO compatibility (25 Jan. 2021)
 ### Tuning for Windows (24 Jan. 2021)
 ### Minor fix of GUI behavior (23 Jun. 2021)
