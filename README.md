@@ -50,7 +50,22 @@ Try:
         option.DeviceName = devices{deviceID};
         analysisStr = capricepResponseTest(fs, tResponse, nRepetition, ...
             outChannel, inChannel, 'acoustic_system', option);
-    end
+        analysisStrCore = struct;
+        analysisStrCore.yRecorded = analysisStr.yRecorded;
+        analysisStrCore.pinkLPC = analysisStr.pinkLPC;
+        analysisStrCore.fs = fs;
+        analysisStrCore.tResponse = analysisStr.tResponse;
+        analysisStrCore.nRepetition = analysisStr.nRepetition;
+        analysisStrCore.outChannel = analysisStr.outChannel;
+        analysisStrCore.numChannels = analysisStr.numChannels;
+        analysisStrCore.selectedChannels = analysisStr.selectedChannels;
+        analysisStrCore.lAeq = analysisStr.lAeq;
+        analysisStrCore.calibrationConst = analysisStr.calibrationConst;
+        app.CommonSignal.outPath = ".";
+        fname = "test";
+        save(app.CommonSignal.outPath + "/" + fname, "analysisStrCore");
+        tmp = capResultReporter([char(app.CommonSignal.outPath)   '/'  char(fname)], 'NONE');
+  end
     
 For usual room, tResponse = 400; provides better result in the low-frequency end. 800 is better for a classroom.
 
