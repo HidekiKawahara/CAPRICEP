@@ -74,6 +74,7 @@ Please download this folder as a whole.
 
 ## Memo (working)
 
+### Driver assignment is added to off-line measurement function (13 March 2021)
 ### Calibration error and driver compatibility issue fixed (08 March 2021)
 ### Voice memo fix for ASIO compatibility (25 Jan. 2021)
 ### Tuning for Windows (24 Jan. 2021)
