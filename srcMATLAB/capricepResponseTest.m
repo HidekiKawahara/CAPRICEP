@@ -1,8 +1,8 @@
 function output = capricepResponseTest(fs, tResponse, nRepetition, outChannel, inChannel, varargin)
 % Generate test signal and execute acoustic measurement using the test
 % signal
-% 
-% output = 
+%
+% output =
 %   capricepResponseTest(fs, tResponse, nRepetition, outChannel, inChannel)
 % output =
 %   capricepResponseTest(fs, tResponse, nRepetition, outChannel, inChannel
@@ -36,7 +36,7 @@ function output = capricepResponseTest(fs, tResponse, nRepetition, outChannel, i
 %            nRepetition: 30
 %       calibrationConst: 0   % simulator did not used this
 %                   fLow: 40  % low frequency limit for pink noise design
-%                pinkLPC: [1×51 double] % paramet for IIR pink noise 
+%                pinkLPC: [1×51 double] % paramet for IIR pink noise
 %              xTestPink: [197837×1 double] % used output test signal
 %             outChannel: 'L-ch'
 %            numChannels: 1    % number of channels assigned to A/D
@@ -50,7 +50,7 @@ function output = capricepResponseTest(fs, tResponse, nRepetition, outChannel, i
 %                                     A-weighted dB rel. 20 micro Pa
 %     elapsedTimeRecover: 0.1838  % elapsed time for post processing (s)
 
-% Licence 
+% Licence
 % Copyright 2020 Hideki Kawahara
 %
 % Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,7 +64,6 @@ function output = capricepResponseTest(fs, tResponse, nRepetition, outChannel, i
 % WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing permissions and
 % limitations under the License.
-
 
 switch nargin
     case 5
@@ -80,6 +79,13 @@ switch nargin
             calibrationConst = option.calibrationConst(selectedChannels);
         else
             selectedChannels = 1:inChannel;
+        end
+        if isfield(option, "DeviceName")
+            playRecDevice = option.DeviceName;
+        else
+            disp("Please set the full duplex driver to the field DeviceName")
+            output = [];
+            return
         end
 end
 redDevInfo = info(audioDeviceReader);
@@ -162,6 +168,7 @@ np = 50;
 [pinkLPC, ~] = levinson(rawAutoCorr, np);
 xTestPinkOrg = filter(1, pinkLPC, xTest);
 xTestPink = 0.8 * xTestPinkOrg / max(abs(xTestPinkOrg));
+xTestPink = [zeros(fs, 1); xTestPink];
 %---- test target system ----
 switch testMode
     case 'acoustic_system'
@@ -175,24 +182,17 @@ switch testMode
                 output = [];
                 return;
         end
-        nBits = 24;
-        playerObj = audioplayer(xOut, fs, nBits);
-        if audiodevinfo(1,-1,fs,nBits,inChannel)
-            recorderObj = audiorecorder(fs, nBits, inChannel);
-        else
-            disp("This device does not support;  fs:" + num2str(fs) ...
-                + " (Hs)  nBits:" + num2str(nBits) + "  nChannel:" ...
-                + num2str(inChannel));
-            output = [];
-            return;
+        numChannels = 2;
+        playRec = audioPlayerRecorder(fs,'BitDepth','24-bit integer', ...
+            'RecorderChannelMapping', [1 2], "Device", playRecDevice) ;
+        y = [xTestPink xTestPink] * 0;
+        lBuffer = 1024; % use default buffer size
+        nCycle = floor(length(xTestPink) / lBuffer);
+        for jj = 1:nCycle
+            tmpIdx = (jj - 1) * lBuffer + (1:lBuffer)';
+            y(tmpIdx, :) = playRec(xOut(tmpIdx, :));
         end
-        numChannels = get(recorderObj, 'NumChannels');
-        record(recorderObj);
-        pause(1)
-        play(playerObj);
-        pause(tTestSignal + 1);
-        y = getaudiodata(recorderObj);
-        stop(recorderObj);
+        release(playRec);
         switch inChannel
             case 1
                 y = y(:, 1);
