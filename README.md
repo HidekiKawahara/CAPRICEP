@@ -65,7 +65,7 @@ Try:
         fname = "test";
         save(app.CommonSignal.outPath + "/" + fname, "analysisStrCore");
         tmp = capResultReporter([char(app.CommonSignal.outPath)   '/'  char(fname)], 'NONE');
-  end
+      end
     
 For usual room, tResponse = 400; provides better result in the low-frequency end. 800 is better for a classroom.
 
