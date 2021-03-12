@@ -31,16 +31,27 @@ Use "capResultReporter" for visualize and report the measurement results
 
 Try:
 
-    Fs = 44100;
-    tResponse = 200;
-    nRepetition = 30;
-    outChannel = 'L-ch';
-    inChannel = 1;
+    app = struct;
+    app.CommonSignal = struct;
+    devices = getAudioDevices(audioPlayerRecorder);
+    [deviceID,tf] = listdlg('ListString',devices, 'SelectionMode','single');
+    if tf
+        app.CommonSignal.DeviceName = devices{deviceID};
+        app.DeviceLabel.Text = devices{deviceID};
+        fs = 44100;
+        app.CommonSignal.Reader = audioPlayerRecorder(fs,"RecorderChannelMapping", 1, ...
+            "BitDepth", "24-bit integer", "Device", devices{deviceID});
+        app.DriverLabel.Text = 'simultaneousIO'; %get(app.CommonSignal.Reader,"Driver");
+        tResponse = 400;
+        nRepetition = 30;
+        outChannel = 'L-ch';
+        option.calibrationConst = 200;
+        inChannel = 1;
+        option.DeviceName = devices{deviceID};
+        analysisStr = capricepResponseTest(fs, tResponse, nRepetition, ...
+            outChannel, inChannel, 'acoustic_system', option);
+    end
     
-    analysisStr = capricepResponseTest(fs, tResponse, nRepetition, outChannel, inChannel)
-    specStr = capricepResponseAnalysis(analysisStr)
-    reportStr = capricepResponseReport(specStr)
-
 For usual room, tResponse = 400; provides better result in the low-frequency end. 800 is better for a classroom.
 
 ## Sample files
