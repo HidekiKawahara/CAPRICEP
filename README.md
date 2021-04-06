@@ -5,7 +5,9 @@ All components are uploaded. Type "realTimeTester" to start the application. Sup
 
 ## Reference
 
-Kawahara, H. and Yatabe, K.: Cascaded all-pass filterswith randomized center frequencies and phase polarity for　acoustic and speech measurement and data augmentation,arXiv:2010.13185(2020).
+Kawahara, H. and Yatabe, K.: Cascaded all-pass filterswith randomized center frequencies and phase polarity for　acoustic and speech measurement and data augmentation,arXiv:2010.13185(2020) (Accepted: ICASSP2021).
+[(Link to PDF) ](https://arxiv.org/pdf/2010.13185.pdf)
+
 
 ### Abstract
 
@@ -19,6 +21,26 @@ Moreover, it is general enough to provide versatile research tools for other fie
 We illustrate using acoustic measurements and data augmentation as representative examples among various prospective applications. 
 We open-sourced MATLAB implementation. 
 It consists of an interactive and real-time acoustic tool, MATLAB functions, and supporting materials.
+Recently we introduced an interactive and real-time tool for measureing voice fundamental frequency response to auditory test signal with frequency modulation.
+
+## Interactive and real-time tool for measureing voice fo response to FM test signals
+
+Dwonload the directory "auditoryResponseTester." Then, try "auditoryResponseTester" to invoke the tool.
+[![Watch the video](auditoryResponseTesterPV.jpg)]( https://youtu.be/5mYh28OKTw0)
+
+### Getting started: instruction manual
+
+English and Japanese versions are in doc folder.
+
+### Reference
+
+Hideki Kawahara, Toshie Matsui, Kohei Yatabe, Ken-Ichi Sakakibara, Minoru Tsuzaki, Masanori Morise, Toshio Irino: Mixture of orthogonal sequences made from extended time-stretched pulses enables measurement of involuntary voice fundamental frequency response to pitch perturbation,	arXiv:2104.01444 (2021).
+[(Link to PDF) ](https://arxiv.org/pdf/2104.01444.pdf)
+
+The following method is adopted for CAPRICEP and build in this tool.
+
+Hideki Kawahara; Ken-Ichi Sakakibara; Mitsunori Mizumachi; Masanori Morise; Hideki Banno: Simultaneous measurement of time-invariant linear and nonlinear, and random and extra responses using frequency domain variant of velvet noise,	Proc. APSIPA ASC, pp.174-183 (2020).
+[(Link to PDF) ](http://www.apsipa.org/proceedings/2020/pdfs/0000174.pdf)
 
 ## Interactive and real-time acoustic measurement tool
 
@@ -92,11 +114,15 @@ originalLevelAdjusted.wav
 These installers are still experimental (17 Jan. 2021);
 
 ### Installer for macOS
-[![macOS installer](macInstaller.jpg)](https://drive.google.com/drive/folders/1v0TTaMb3Ka2xAND4TOLt_eaov3qfePtq?usp=sharing)
-Please download this folder as a whole. 
+
+[Link to installer ](https://drive.google.com/drive/folders/1v0TTaMb3Ka2xAND4TOLt_eaov3qfePtq?usp=sharing)
+Please download this folder as a whole. Then, execute as the installer application.
 
 ### Installer for Windows10 (64bit)
-[![Windows10 (64bit) installer](winInstaller.jpg)](https://drive.google.com/file/d/12tj_JiQiDLYMiBZaEckRQCQy0aaxfFpb/view?usp=sharing)
+
+
+[Link to installer ](https://drive.google.com/file/d/12tj_JiQiDLYMiBZaEckRQCQy0aaxfFpb/view?usp=sharing)
+Please click this link. Then execute the downloaded installer application.
 
 ## Memo (working)
 
