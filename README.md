@@ -126,6 +126,7 @@ Please click this link. Then execute the downloaded installer application.
 
 ## Memo (working)
 
+### Urgent bug fix release for OTOGAKU symposiun (18 June 2021)
 ### Auditory to voice fo response tester is added (6 April 2021)
 ### Driver assignment is added to off-line measurement function (13 March 2021)
 ### Calibration error and driver compatibility issue fixed (08 March 2021)
