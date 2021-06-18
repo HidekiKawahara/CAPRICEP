@@ -96,6 +96,22 @@ switch fs
                 return;
         end
         tmp = load(tspName);
+    case 48000
+        switch tResponse
+            case 100
+                tspName = "setCAPRICEP100msRc.mat";
+            case 200
+                tspName = "setCAPRICEP200msRc.mat";
+            case 400
+                tspName = "setCAPRICEP400msRc.mat";
+            case 800
+                tspName = "setCAPRICEP800msRc.mat";
+            otherwise
+                output = [];
+                disp("Available response time is 100, 200, and 400 ms, 800 ms, for the time being");
+                return;
+        end
+        tmp = load(tspName);
     case 176400
         switch tResponse
             case 100
@@ -121,6 +137,22 @@ switch fs
             otherwise
                 output = [];
                 disp("Available response time is 100, 200, and 400 ms with 192000 Hz for the time being");
+                return;
+        end
+        tmp = load(tspName);
+    case 96000
+        switch tResponse
+            case 50
+                tspName = "setCAPRICEP100msRc.mat";
+            case 100
+                tspName = "setCAPRICEP200msRc.mat";
+            case 200
+                tspName = "setCAPRICEP400msRc.mat";
+            case 400
+                tspName = "setCAPRICEP800msRc.mat";
+            otherwise
+                output = [];
+                disp("Available response time is 50, 100, 200, and 400 ms with 96000 Hz for the time being");
                 return;
         end
         tmp = load(tspName);
@@ -216,6 +248,13 @@ sigPeaks = sigPeaks(1:peakId) - 22;
 
 %safeSigPeaks = sigPeaks(2:end-1); % needs some safety checker hear!
 safeSigPeaksLong = sigPeaks(2:2:end-1);
+%% emergency
+if length(safeSigPeaksLong) < 2
+    disp("repetition is too few, " + num2str(length(safeSigPeaksLong)) + " times");
+    output = [];
+    return;
+end
+
 %%   initial point refinmement
 
 headMargin = round(fs * 0.02); % 20 ms preceding margin
@@ -282,13 +321,16 @@ output.deviationPowerSpec = sum(abs(deviationSpec) .^2, 3)/2 * length(safeSigPea
 output.randomPowerSpec = abs(randomSpec) .^2 * 8 * length(safeSigPeaksLong) / 3;
 output.frequencyAxis = (0:fftl-1)/fftl * fs;
 output.prePowerSpec = abs(fft(averageSilence, fftl)) .^2 / 3;
-%% calibration information recovery
-if analysisStr.caliblationConst == 0
-weightFilt = weightingFilter('A-weighting' ,fs);
-yAweight = weightFilt(analysisStr.yRecorded);
-caliblationConst = analysisStr.lAeq - 20*log10(std(yAweight(round(length(analysisStr.yRecorded) / 2) + (-nto:nto), :)));
+%% calibration information recovery calibrationConst
+if ~isfield(analysisStr, 'calibrationConst')
+    analysisStr.calibrationConst = 0;
+end
+if analysisStr.calibrationConst == 0
+    weightFilt = weightingFilter('A-weighting' ,fs);
+    yAweight = weightFilt(analysisStr.yRecorded);
+    calibrationConst = analysisStr.lAeq - 20*log10(std(yAweight(round(length(analysisStr.yRecorded) / 2) + (-nto:nto), :)));
 else
-    caliblationConst = analysisStr.caliblationConst;
+    calibrationConst = analysisStr.calibrationConst;
 end
 
 %%
@@ -310,7 +352,7 @@ output.averageLongRTVcomp = averageLongRTVcomp;
 output.orthogonalSignal = orthogonalSignal;
 output.sumSignal = sumSignal;
 output.selectedChannels = analysisStr.selectedChannels;
-output.caliblationConst = caliblationConst;
+output.calibrationConst = calibrationConst;
 output.lAeq = analysisStr.lAeq;
 output.elapsedTime = toc(startTic);
 end

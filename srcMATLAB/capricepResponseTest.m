@@ -65,6 +65,7 @@ function output = capricepResponseTest(fs, tResponse, nRepetition, outChannel, i
 % See the License for the specific language governing permissions and
 % limitations under the License.
 
+testMode = 'acoustic_system';
 switch nargin
     case 5
         testMode = 'acoustic_system';
@@ -80,12 +81,15 @@ switch nargin
         else
             selectedChannels = 1:inChannel;
         end
+        switch testMode
+            case 'acoustic_system'
         if isfield(option, "DeviceName")
             playRecDevice = option.DeviceName;
         else
             disp("Please set the full duplex driver to the field DeviceName")
             output = [];
             return
+        end
         end
 end
 redDevInfo = info(audioDeviceReader);
