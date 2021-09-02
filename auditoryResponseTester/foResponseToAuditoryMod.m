@@ -11,11 +11,20 @@ else
 end
 
 [x,fs] = audioread(fullPathName);
+FMcent = 25;
+xOrg = x;
 fileInfo = audioinfo(fullPathName);
 tmp = sscanf(fileInfo.Comment, '%10f');
 if length(tmp) > 1
     fo = tmp(1);
+    foVoice = fo;
     calibrationConst = tmp(2);
+    if length(tmp) > 2
+        foVoice = tmp(3);
+        if length(tmp) > 3
+            FMcent = tmp(4);
+        end
+    end
 else
     fo = tmp(1);
     calibrationConst = 0;
@@ -26,8 +35,12 @@ if displayInd
     figure;
     subplot(211)
     plot((1:length(x))/fs, x(:,1));grid on;
+    xlabel('time (s)')
+    title(fullPathName);% ; ['L-ch signal fileInfo:' fileInfo.Comment]});
     subplot(212)
     plot((1:length(x))/fs, x(:,2));grid on;
+    xlabel('time (s)')
+    title('R-ch signal: ')
 end
 %x(:,1) = x(:,1) + 0.1 * x(:,1) .^2;
 
@@ -37,13 +50,30 @@ xTSPSel = testData.xTSPSel;
 c = testData.cOrdered;
 fftl = testData.fftl;
 fftlSeg = testData.fftlSeg;
+output.fftl = fftl;
+output.fftlSeg = fftlSeg;
 w = sixtermCos(round(12*fs/fo));
 tww = ((0:length(w)-1) - length(w) / 2)' / fs;
 hw = w / sum(w) .* exp(1i * 2 * pi * fo * tww);
+wV = sixtermCos(round(12*fs/foVoice));
+twwV = ((0:length(wV)-1) - length(wV) / 2)' / fs;
+hwV = wV / sum(wV) .* exp(1i * 2 * pi * foVoice * twwV);
 if debug
-hw2 = w / sum(w) .* exp(1i * 2 * pi * fo * tww * 2);
+    hw2 = w / sum(w) .* exp(1i * 2 * pi * fo * tww * 2);
 end
-
+%% Low cut filter design
+fftlShort = 8192;
+foLower = min(fo, foVoice) * 0.7;
+filtGain = ones(fftlShort, 1);
+fx = (0:fftlShort -1 ) /fftlShort * fs;
+fxBi = fx;
+fxBi(fx > fs / 2) = fxBi(fx > fs / 2) - fs;
+filtGain(foLower > abs(fxBi)) = 0;
+filtResp = fftshift(ifft(filtGain)) .* blackman(fftlShort);
+wTmp = fftfilt(hw, [filtResp;zeros(fftlShort, 1)]);
+hw = wTmp( round(6*fs/fo) + (1:fftlShort));
+wTmp = fftfilt(hwV, [filtResp;zeros(fftlShort, 1)]);
+hwV = wTmp( round(6*fs/foVoice) + (1:fftlShort));
 %% Check test signal type
 
 switch fileInfo.Artist
@@ -53,18 +83,20 @@ switch fileInfo.Artist
         else
             combId = 1;
         end
-        outputg = generateTestFMSignal(testData, fo, fileInfo.Artist, combId, 25, x(:,1));
-        segloc = (1:testData.fftlSeg * 4);
-        checkLoc = ((1:testData.fftlSeg * 8));
+        outputg = generateTestFMSignal(testData, fo, fileInfo.Artist, combId, FMcent, x(:,1));
+        segloc = (1:testData.fftlSeg * 8);
+        checkLoc = ((1:testData.fftlSeg * 16));
         %slidingCorr = fftfilt(flip(x(segloc + testData.fftl*2, 2)), ...
         %    output.testSignal(segloc + testData.fftl*2));
-        slidingCorr = fftfilt(flip(x(segloc + testData.fftl*2, 2)), ...
+        slidingCorr = fftfilt(flip(xOrg(segloc + testData.fftl*2, 2)), ...
             outputg.testSignal(checkLoc + testData.fftl*2));
+        %xslidingCorr = fftfilt(flip(xOrg(segloc + testData.fftl*2, 2)), ...
+        %    outputg.testSignal(checkLoc + testData.fftl*2));
         [maxCorr, idxx] = max(slidingCorr);
         if maxCorr < 0.9
             disp('test signal does not match with this test');
         else
-            outputg = generateTestFMSignal(testData, fo, 'SINE', combId, 25, x(:,1));
+            outputg = generateTestFMSignal(testData, fo, 'SINE', combId, FMcent, x(:,1));
             x(:,2) = outputg.testSignal(min(length(x), max(1, idxx + (1:length(x)) - testData.fftlSeg * 8)));
         end
     otherwise
@@ -82,11 +114,12 @@ output.calibrationConst = calibrationConst;
 output.combination = c(combId, :);
 
 %% Fo extraction
-xanl = fftfilt(hw, x);
+xanl = fftfilt([hwV hw], [x; zeros(fftlShort, 2)]);
+xanl = xanl(fftlShort/2 + (1:length(x)), :);
 fxri = angle(xanl([2:end end],:) ./ xanl) / 2 / pi * fs;
 if debug
-xanl2 = fftfilt(hw2, x);
-fxri2 = angle(xanl2([2:end end],:) ./ xanl2) / 2 / pi * fs / 2;
+    xanl2 = fftfilt(hw2, x);
+    fxri2 = angle(xanl2([2:end end],:) ./ xanl2) / 2 / pi * fs / 2;
 end
 
 %% Display acquired fo trajectory
@@ -94,19 +127,28 @@ if displayInd
     figure;
     subplot(211)
     if debug
-    plot((1:length(x))/fs, fxri2(:,1));grid on;
+        plot((1:length(x))/fs, fxri2(:,1));grid on;
     else
         plot((1:length(x))/fs, fxri(:,1));grid on;
     end
-    axis([0 length(x)/fs fo/2^(1/3) fo*2^(1/3)])
+    title('L-ch ');
+    xlabel('time (s)')
+    ylabel('fund. freq. (Hz)')
+    axis([0 length(x)/fs foVoice/2^(1/3) foVoice*2^(1/3)])
     subplot(212)
     plot((1:length(x))/fs, fxri(:,2));grid on;
+    title('R-ch ');
+    xlabel('time (s)')
+    ylabel('fund. freq. (Hz)')
     axis([0 length(x)/fs fo/2^(1/3) fo*2^(1/3)])
 end
-rawFoi = max(fo/2^0.25,min(fo*2^0.25, fxri));
+tmp1 =  max(foVoice/2^0.25,min(foVoice*2^0.25, fxri(:, 1)));
+tmp2 = max(fo/2^0.25,min(fo*2^0.25, fxri(:, 2)));
+rawFoi = [tmp1, tmp2];
+%rawFoi = max(fo/2^0.25,min(fo*2^0.25, fxri));
 if debug
-rawFoi2 = max(fo/2^0.25,min(fo*2^0.25, fxri2));
-rawFoi(:,1) = rawFoi2(:,1);
+    rawFoi2 = max(fo/2^0.25,min(fo*2^0.25, fxri2));
+    rawFoi(:,1) = rawFoi2(:,1);
 end
 
 %% Pulse recovery
@@ -115,9 +157,16 @@ index1 = 1:10;
 otherElement = index1(~ismember(index1, c(combId,:)));
 %element4 = otherElement(randi(7));
 setId = [c(combId,:), otherElement];
+output.rawFoi = rawFoi; % for debug
+output.filterOutput = xanl;
+output.rawFoValues = fxri;
 
-rawFoCent = 1200 * log2(rawFoi/fo);
-rawFoCent = rawFoCent - mean(rawFoCent);
+avFoOut = averageReliableFo(output);
+averageFoCent = 1200*log2(avFoOut.averageFo ./ [foVoice fo]);
+averageFoCent(isnan(averageFoCent)) = 0;
+
+rawFoCent = [1200 * log2(tmp1/foVoice), 1200 * log2(tmp2/fo)];
+rawFoCent = rawFoCent - averageFoCent;
 recoveredFoCentSp = fftfilt(xTSPSel(end:-1:1, setId), rawFoCent(:,1));
 recoveredFoCentTx = fftfilt(xTSPSel(end:-1:1, setId), rawFoCent(:,2));
 
@@ -136,8 +185,8 @@ end
 %% Orthogonalization
 bMat = [1 1 1 1;1 -1 1 -1;1 1 -1 -1]';
 bMatEx = [bMat ones(4, 7); bMat -ones(4, 7)];
-orthFoCentSp = recoveredFoCentSp;
-orthFoCentTx = recoveredFoCentTx;
+orthFoCentSp = recoveredFoCentSp(fixedIdx, :);
+orthFoCentTx = recoveredFoCentTx(fixedIdx, :);
 for ii = 2:8
     rotatedIdx = circshift((1:length(x)), -(ii-1)*fftlSeg);
     orthFoCentSp = orthFoCentSp + recoveredFoCentSp(rotatedIdx, :) ...
@@ -145,6 +194,10 @@ for ii = 2:8
     orthFoCentTx = orthFoCentTx + recoveredFoCentTx(rotatedIdx, :) ...
         * diag([bMatEx(ii, 1), bMatEx(ii, 2), bMatEx(ii, 3), bMatEx(ii, 4:10)]);
 end
+%%
+orthIndex = circshift((1:length(x)), -4*fftlSeg);
+orthFoCentTx = orthFoCentTx(orthIndex ,:);
+orthFoCentSp = orthFoCentSp(orthIndex ,:);
 
 %% Display raw result
 txSig = (1:length(x))/fs;
@@ -188,6 +241,9 @@ if displayInd
     hold all;plot(txSig, avBackGround);grid on
     title([fileInfo.Artist ' ' fileInfo.Comment '  syncAv:' num2str(nValid)])
 end
+output.nValid = nValid;
+output.originalData = xOrg;
+output.filterResponse = [hwV hw];
 output.inputFileName = fullPathName;
 output.elapsedTime = toc(startTic);
 end
