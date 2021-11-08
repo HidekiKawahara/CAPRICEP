@@ -23,6 +23,17 @@ We open-sourced MATLAB implementation.
 It consists of an interactive and real-time acoustic tool, MATLAB functions, and supporting materials.
 Recently we introduced an interactive and real-time tool for measureing voice fundamental frequency response to auditory test signal with frequency modulation.
 
+## Measurement of pitch extractors' response to FM test signal of simulated vowel /a/
+
+Folder "fmResponseTester" consists of the tester. The following command tests MATLAB's pitch extractor function "pitch.m"
+
+   ncfOut = fmTransfTestGauss(290, 1, pwd, @pitchNCF)
+  
+For details refer the following.
+
+Hideki Kawahara, Kohei Yatabe, Ken-Ichi Sakakibara, Tatsuya Kitamura, Hideki Banno, Masanori Morise: Objective measurement of pitch extractors' responses to frequency modulated sounds and two reference pitch extraction methods for analyzing voice pitch responses to auditory stimulation,	arXiv:2111.03629 (2021).
+[(Link to PDF) ](https://arxiv.org/pdf/2111.03629.pdf)
+
 ## Interactive and real-time tool for measureing voice fo response to FM test signals
 
 Dwonload the directory "auditoryResponseTester." Then, try "auditoryResponseTester" to invoke the tool.
