@@ -25,11 +25,11 @@ Recently we introduced an interactive and real-time tool for measureing voice fu
 
 ## Measurement of pitch extractors' response to FM test signal of simulated vowel /a/
 
-Folder "fmResponseTester" consists of the tester. The following command tests MATLAB's pitch extractor function "pitch.m"
+Folder "fmResponseTester" consists of the tester. The following command tests MATLAB's pitch extractor function "pitch.m" using a test signal with 240 Hz pitch and 1 cent modulation depth. The output reports (graphics and MATLAB data) are stored on the current working directory. The last argument "@pitchNCF" is a function pointer to the interface program (user has to write) for the target pitch extractor (a MATLAB function "pitch.m").
 
-   ncfOut = fmTransfTestGauss(290, 1, pwd, @pitchNCF)
+    ncfOut = fmTransfTestGauss(240, 1, pwd, @pitchNCF)
   
-For details refer the following.
+For technical details refer the following.
 
 Hideki Kawahara, Kohei Yatabe, Ken-Ichi Sakakibara, Tatsuya Kitamura, Hideki Banno, Masanori Morise: Objective measurement of pitch extractors' responses to frequency modulated sounds and two reference pitch extraction methods for analyzing voice pitch responses to auditory stimulation,	arXiv:2111.03629 (2021).
 [(Link to PDF) ](https://arxiv.org/pdf/2111.03629.pdf)
