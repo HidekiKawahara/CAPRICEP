@@ -29,7 +29,7 @@ Folder "fmResponseTester" consists of the tester. The following command tests MA
 
     ncfOut = fmTransfTestGaussN(240, 1, pwd, @pitchNCF)
   
-For technical details refer the following.
+You can also check @pitchYANG. It tests the pitch extractor for yang_STRAIGHT. It provides better pitch trajectory than using NCF in MATLAB.
 
 ### Reference
 
