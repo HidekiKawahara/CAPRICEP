@@ -164,6 +164,7 @@ output.rawFoValues = fxri;
 avFoOut = averageReliableFo(output);
 averageFoCent = 1200*log2(avFoOut.averageFo ./ [foVoice fo]);
 averageFoCent(isnan(averageFoCent)) = 0;
+averageFoCent = averageFoCent * 0; % This is tentative fix
 
 rawFoCent = [1200 * log2(tmp1/foVoice), 1200 * log2(tmp2/fo)];
 rawFoCent = rawFoCent - averageFoCent;
@@ -245,6 +246,7 @@ output.nValid = nValid;
 output.originalData = xOrg;
 output.filterResponse = [hwV hw];
 output.inputFileName = fullPathName;
+output.avFoOut = avFoOut; % side information for debug
 output.elapsedTime = toc(startTic);
 end
 
