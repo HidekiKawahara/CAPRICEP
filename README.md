@@ -141,6 +141,7 @@ Please click this link. Then execute the downloaded installer application.
 
 ## Memo (working)
 
+### Auditory to response tester bug fix and update (24 Nov. 2021)
 ### Auditory to response tester bug fix and update (03 Sept. 2021)
 ### Urgent bug fix release for OTOGAKU symposiun (18 June 2021)
 ### Auditory to voice fo response tester is added (6 April 2021)
