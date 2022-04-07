@@ -27,11 +27,19 @@ Recently we introduced an interactive and real-time tool for measureing voice fu
 
 Folder "fmResponseTester" consists of the tester. The following command tests MATLAB's pitch extractor function "pitch.m" using a test signal with 240 Hz pitch and 1 cent modulation depth. The output reports (graphics and MATLAB data) are stored on the current working directory. The last argument "@pitchNCF" is a function pointer to the interface program (user has to write) for the target pitch extractor (a MATLAB function "pitch.m").
 
-    ncfOut = fmTransfTestGaussN(240, 1, pwd, @pitchNCF)
+   output = fmTransfTestPeriodicRevSNR(targetFo, fMcent, @pitchNCF, 'pink', snr)
   
 You can also check @pitchYANG. It tests the pitch extractor for yang_STRAIGHT. It provides better pitch trajectory than using NCF in MATLAB.
 
 ### Reference
+
+Hideki Kawahara, Kohei Yatabe, Ken-Ichi Sakakibara, Tatsuya Kitamura, Hideki Banno, Masanori Morise: Measuring pitch extractors' response to frequency-modulated multi-component signals,
+arXiv:2204.00911 (2022).
+[(Link to arXiv](https://arxiv.org/pdf/2204.00911)
+
+Hideki Kawahara, Kohei Yatabe, Ken-Ichi Sakakibara, Tatsuya Kitamura, Hideki Banno, Masanori Morise: An objective test tool for pitch extractors' response attributes,
+arXiv:2204.00902 (2022).
+[(Link to arXiv](https://arxiv.org/abs/2204.00902)
 
 Hideki Kawahara, Kohei Yatabe, Ken-Ichi Sakakibara, Tatsuya Kitamura, Hideki Banno, Masanori Morise: Objective measurement of pitch extractors' responses to frequency modulated sounds and two reference pitch extraction methods for analyzing voice pitch responses to auditory stimulation,	arXiv:2111.03629 (2021).
 [(Link to PDF) ](https://arxiv.org/pdf/2111.03629.pdf)
