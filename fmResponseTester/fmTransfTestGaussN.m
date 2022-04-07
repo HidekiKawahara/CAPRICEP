@@ -1,4 +1,4 @@
-function output = fmTransfTestGaussN(fo, fMcent, outDirName, foWrapper)
+function output = fmTransfTestGaussN(fo, fMcent, outDirName, foWrapper,figHandle)
 %   Response measurement of pitch extractors to FM test signal
 %   using narrow Gaussian pulse　(fmTransfTestGauss is obsolate)
 %      output = fmTransfTestGaussN(fo, fMcent, outDirName, foWrapper)
@@ -48,12 +48,13 @@ testCondStr.fMcent = fMcent;
 testCondStr.carrierType = carrierType;
 testCondStr.titleStr = foOut.titleStr;
 testCondStr.filePrefix = foOut.filePrefix;
-zdisplayFmTfncTest(xa, fs, trueF0, foOut.fo, foOut.tt, testCondStr, testSignalData);
+analysisOut = zdisplayFmTfncTest(xa, fs, trueF0, foOut.fo, foOut.tt, testCondStr, testSignalData,figHandle);
 output.foOut = foOut;
 output.testCondStr = testCondStr;
 output.testSignalData = testSignalData;
 output.testSigOut = testSigOut;
 output.xa = xa;
+output.analysisOut = analysisOut;
 output.elaspedTime = toc(startTic);
 end
 
@@ -129,7 +130,7 @@ output.fftlSeg = fftlSeg;
 output.elapsedTime = toc(startTic);
 end
 
-function output = zdisplayFmTfncTest(x, fs, trueF0, estF0, estTime, testCondStr, testSignalData)
+function output = zdisplayFmTfncTest(x, fs, trueF0, estF0, estTime, testCondStr, testSignalData,figHandle)
 %%
 startTic = tic;
 titleStr = testCondStr.titleStr;
@@ -137,10 +138,11 @@ fo = testCondStr.fo;
 fMcent = testCondStr.fMcent;
 outDirName = testCondStr.outDirName;
 filePrefix = testCondStr.filePrefix;
-carrierType = testCondStr.carrierType;
+%carrierType = testCondStr.carrierType;
 tputG120 = zfoFixAndAligner(x, fs, fo, trueF0, estF0, estTime);
 utputG120 = zfoResponseAnalysis(testSignalData, tputG120.rawF0i, tputG120.trueF0, fo, fs);
-figure;
+if ~isempty(figHandle)
+figure(figHandle);
 set(gcf, 'position', [681   700   671   277])
 semilogx(utputG120.fx, utputG120.mesGain-utputG120.refGain, 'k-', 'linewidth', 2);
 hold all;
@@ -158,7 +160,9 @@ fNameOut = filePrefix + datestr(now,30) + "NG";
 drawnow;
 print("-depsc", outDirName + "/" + fNameOut + ".eps");
 save(outDirName + "/" + fNameOut + ".mat", "testCondStr");
+end
 disp(titleStr + "  at:" + datestr(now));
+output.utputG120 = utputG120;
 output.elapsedTime = toc(startTic);
 end
 

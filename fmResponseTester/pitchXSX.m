@@ -1,7 +1,7 @@
-function output = pitchYANG(xa, fs)
-% Interface function for pitch extractor of YANG_vocoder
-%   output = pitchYANG(xa, fs)
-%     Use the function name "@pitchYANG" for the argument of the evaluator
+function output = pitchXSX(xa, fs)
+% Interface function for pitch extractor of TANDEM-STRAIGHT
+%   output = pitchXSX(xa, fs)
+%     Use the function name "@pitchXSX" for the argument of the evaluator
 % Augment
 %   xa   : test signal with CAPRICEP FM and simulatee /a/ spectrum
 %   fs   : sampling frequency (Hz)
@@ -16,9 +16,9 @@ function output = pitchYANG(xa, fs)
 % LICENSE: refer to LICENSE in this folder
 
 output = struct;
-sourceStr = AnalyzeSpeechSource(xa, fs);
-output.fo = sourceStr.f0;
-output.tt = sourceStr.frame_time;
-output.titleStr = "YANG ";
-output.filePrefix = "pYANG";
+r = exF0candidatesTSTRAIGHTGB(xa,fs);
+output.fo = r.f0;
+output.tt = r.temporalPositions;
+output.titleStr = "XSX ";
+output.filePrefix = "pXSX";
 end

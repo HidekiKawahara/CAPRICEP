@@ -1,7 +1,7 @@
-function output = pitchYANG(xa, fs)
-% Interface function for pitch extractor of YANG_vocoder
-%   output = pitchYANG(xa, fs)
-%     Use the function name "@pitchYANG" for the argument of the evaluator
+function output = pitchHarvest(xa, fs)
+% Interface function for pitch extractor of WORLD
+%   output = pitchHarvest(xa, fs)
+%     Use the function name "@pitchHarvest" for the argument of the evaluator
 % Augment
 %   xa   : test signal with CAPRICEP FM and simulatee /a/ spectrum
 %   fs   : sampling frequency (Hz)
@@ -16,9 +16,10 @@ function output = pitchYANG(xa, fs)
 % LICENSE: refer to LICENSE in this folder
 
 output = struct;
-sourceStr = AnalyzeSpeechSource(xa, fs);
-output.fo = sourceStr.f0;
-output.tt = sourceStr.frame_time;
-output.titleStr = "YANG ";
-output.filePrefix = "pYANG";
+option_harvest.f0_floor = 40;
+f0_parameter = Harvest(xa, fs, option_harvest);
+output.fo = f0_parameter.f0;
+output.tt = f0_parameter.temporal_positions;
+output.titleStr = "Harvest ";
+output.filePrefix = "pHarvest";
 end

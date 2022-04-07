@@ -1,5 +1,5 @@
-function output = pitchYANG(xa, fs)
-% Interface function for pitch extractor of YANG_vocoder
+function output = pitchfvSRH(xa, fs)
+% Interface function for pitch extractor of SRH in COVREP
 %   output = pitchYANG(xa, fs)
 %     Use the function name "@pitchYANG" for the argument of the evaluator
 % Augment
@@ -16,9 +16,10 @@ function output = pitchYANG(xa, fs)
 % LICENSE: refer to LICENSE in this folder
 
 output = struct;
-sourceStr = AnalyzeSpeechSource(xa, fs);
-output.fo = sourceStr.f0;
-output.tt = sourceStr.frame_time;
-output.titleStr = "YANG ";
-output.filePrefix = "pYANG";
+%sourceStr = AnalyzeSpeechSource(xa, fs);
+[srh_f0,~,~,srh_time] = pitch_srh(xa,fs,50,500,5);
+output.fo = srh_f0(:);
+output.tt = srh_time(:);
+output.titleStr = "cSRH ";
+output.filePrefix = "pcSRHG";
 end

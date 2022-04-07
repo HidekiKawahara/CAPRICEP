@@ -1,7 +1,7 @@
-function output = pitchYANG(xa, fs)
-% Interface function for pitch extractor of YANG_vocoder
-%   output = pitchYANG(xa, fs)
-%     Use the function name "@pitchYANG" for the argument of the evaluator
+function output = pitchSRH(xa, fs)
+% Interface function for pitch function of MATLAB with SRH option
+%   output = pitchSRH(xa, fs)
+%     Use the function name "@pitchSRH" for the argument of the evaluator
 % Augment
 %   xa   : test signal with CAPRICEP FM and simulatee /a/ spectrum
 %   fs   : sampling frequency (Hz)
@@ -16,9 +16,9 @@ function output = pitchYANG(xa, fs)
 % LICENSE: refer to LICENSE in this folder
 
 output = struct;
-sourceStr = AnalyzeSpeechSource(xa, fs);
-output.fo = sourceStr.f0;
-output.tt = sourceStr.frame_time;
-output.titleStr = "YANG ";
-output.filePrefix = "pYANG";
+[f0,loc] = pitch(xa, fs, "Method","SRH");
+output.fo = f0;
+output.tt = loc/fs;
+output.titleStr = "SRH ";
+output.filePrefix = "pSRH";
 end

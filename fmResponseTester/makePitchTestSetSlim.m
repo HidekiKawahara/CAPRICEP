@@ -1,0 +1,27 @@
+function dataOut = makePitchTestSetSlim(fl, fh, nOct, modCent, foWrapper)
+%output = makePitchTestSetSlim(120, modCent, foWrapper);
+stTic = tic;
+fcList = fl * 2 .^ (0:1/nOct:log2(fh/fl));
+nFo = length(fcList);
+frameStr = struct;
+for ii = 1:nFo
+    output = fmTransfTestPeriodicRev(fcList(ii), modCent, foWrapper);
+    frameStr(ii).trueFo = output.testSigOut.fundamentalFreq;
+    frameStr(ii).measuredFo = output.foOut.fo;
+    frameStr(ii).txFrame = output.foOut.tt;
+    frameStr(ii).lRefAverage = mean(output.lRefInd,2);
+    frameStr(ii).lMesAverage = mean(output.lMesInd,2);
+    %frameStr(ii).lRespInd = output.lRespInd;
+    frameStr(ii).averageResponseL = mean(output.lRespInd,2);
+    frameStr(ii).averageResponse = output.averageResponse;
+    frameStr(ii).varNLTI = output.varNLTI;
+    frameStr(ii).varTV = output.varTV;
+    frameStr(ii).varTVL = output.varTVL;
+    frameStr(ii).fxSeg = output.fxSeg;
+    frameStr(ii).fxlResp = output.fxlResp;
+    frameStr(ii).elaspedTime = output.elaspedTime;
+end
+dataOut = struct;
+dataOut.fcList = fcList;
+dataOut.frameStr = frameStr;
+dataOut.elapsedTime = toc(stTic);
