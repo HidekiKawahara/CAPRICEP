@@ -187,7 +187,7 @@ switch testMode
                 return;
         end
         numChannels = 2;
-        playRec = audioPlayerRecorder(fs,'BitDepth','24-bit integer', ...
+        playRec = audioPlayerRecorder(fs,'BitDepth','32-bit float', ...
             'RecorderChannelMapping', [1 2], "Device", playRecDevice) ;
         y = [xTestPink xTestPink] * 0;
         lBuffer = 1024; % use default buffer size
