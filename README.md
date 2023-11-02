@@ -65,14 +65,14 @@ The following method is adopted for CAPRICEP and build in this tool.
 Hideki Kawahara; Ken-Ichi Sakakibara; Mitsunori Mizumachi; Masanori Morise; Hideki Banno: Simultaneous measurement of time-invariant linear and nonlinear, and random and extra responses using frequency domain variant of velvet noise,	Proc. APSIPA ASC, pp.174-183 (2020).
 [(Link to PDF) ](http://www.apsipa.org/proceedings/2020/pdfs/0000174.pdf)
 
-## Interactive and real-time acoustic measurement tool
+## Interactive and real-time acoustic measurement tool (Compatible with 32-bit floating)
 
 Try "realTimeTester" to invoke the tool.
 [![Watch the video](capricepAcousticTool.jpg)](https://youtu.be/_uzJW2B2FxY)
 
 Use "capResultReporter" for visualize and report the measurement results
 
-## Off-line acoustic measurement
+## Off-line acoustic measurement (Compatible with 32-bit floating)
 
 Try:
 
